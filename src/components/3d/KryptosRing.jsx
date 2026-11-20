@@ -175,9 +175,10 @@ export default function KryptosRing({
       const dockProgress = THREE.MathUtils.clamp((scrollProgress - 0.12) / 0.10, 0, 1);
       const easeDock = 1 - Math.pow(1 - dockProgress, 3);
 
-      const dockedX = isMobile ? 0 : -2.15;
+      const railX = isMobile ? 0 : -state.viewport.width * 0.32;
+      const dockedX = railX;
       const dockedY = isMobile ? 1.4 : 0;
-      const dockedScale = isMobile ? 0.38 : 0.46;
+      const dockedScale = isMobile ? 0.36 : Math.min(0.46, state.viewport.width * 0.10);
 
       const targetX = THREE.MathUtils.lerp(0, dockedX, easeDock);
       const targetY = THREE.MathUtils.lerp(0, dockedY, easeDock);
