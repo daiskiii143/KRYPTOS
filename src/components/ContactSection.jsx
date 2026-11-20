@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, ShieldCheck, Clock, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { Mail, ShieldCheck, Clock, ChevronDown, CheckCircle2, Send, MapPin } from 'lucide-react';
 import { RING_EDITIONS } from '../data/rings';
 import EmergeFromRing from './animation/EmergeFromRing';
 
@@ -44,256 +44,248 @@ export default function ContactSection() {
   ];
 
   return (
-    <section id="contact" className="py-24 border-b border-white/[0.06]">
+    <section id="contact" className="py-24 bg-transparent">
       {/* 1. Header (EmergeFromRing) */}
-      <EmergeFromRing originX={-350} originY={30} rotation={-3}>
+      <EmergeFromRing originX={-320} originY={25} rotation={-2}>
         <div className="mb-14">
-          <div className="flex items-center gap-3 mb-3">
-            <span className="w-6 h-px bg-crimson" />
-            <span className="font-mono text-xs uppercase tracking-[0.28em] text-porcelain-muted">
+          <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 bg-white/[0.04] border border-white/[0.08] mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-crimson" />
+            <span className="text-[11px] font-medium tracking-widest uppercase text-porcelain-muted">
               Atelier Inquiries · Chapter IV
             </span>
           </div>
 
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-porcelain">
+          <h2 className="font-display font-bold text-3xl sm:text-5xl md:text-6xl tracking-tight text-porcelain leading-[1.05]">
             Bespoke Commission & Concierge
           </h2>
 
-          <p className="mt-4 font-serif text-lg sm:text-xl font-light text-porcelain-muted max-w-xl leading-relaxed italic">
-            Direct communication with our Zurich metallurgy artisans. Commission custom ciphers,
-            request private showroom consultations, or register an existing archive piece.
+          <p className="mt-4 text-sm sm:text-base font-light text-porcelain-muted max-w-xl leading-relaxed">
+            Direct communication with our Zurich metallurgy artisans. Commission custom ciphers, request private showroom consultations, or register an existing archive piece.
           </p>
         </div>
       </EmergeFromRing>
 
       {/* 2. Two-Column Layout: Custom Commission Form + Atelier Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-        {/* Left Column: Bespoke Inquiry Form */}
-        <EmergeFromRing originX={-320} originY={40} rotation={-2}>
-          <div className="bg-[#07080B] border border-white/[0.08] p-8 sm:p-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+        {/* Left Column: Bespoke Inquiry Form (Zero Sharp Rectangles) */}
+        <EmergeFromRing originX={-280} originY={35} rotation={-1.5}>
+          <div className="rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] p-6 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
             {isSubmitted ? (
               <div className="py-12 text-center space-y-5 animate-fade-in">
-                <div className="w-12 h-12 rounded-full border border-white/20 mx-auto flex items-center justify-center">
-                  <CheckCircle2 className="w-6 h-6 text-porcelain" />
+                <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 mx-auto flex items-center justify-center">
+                  <CheckCircle2 className="w-6 h-6 text-emerald-400" />
                 </div>
                 <div>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-crimson block mb-1">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-crimson block mb-1">
                     Inquiry Docket #KP-COMM-{(Math.random() * 100000 | 0)}
                   </span>
-                  <h3 className="font-display text-2xl font-normal text-porcelain">
+                  <h3 className="font-display font-bold text-2xl text-porcelain">
                     Commission Dispatched
                   </h3>
-                  <p className="font-sans text-xs text-porcelain-muted mt-2 max-w-xs mx-auto leading-relaxed font-light">
+                  <p className="text-xs text-porcelain-muted mt-2 max-w-xs mx-auto leading-relaxed font-light">
                     An atelier artisan will review your metallurgical request and reply to{' '}
-                    <span className="text-porcelain">{formData.email}</span> within 12 hours.
+                    <span className="text-porcelain font-medium">{formData.email}</span> within 12 hours.
                   </p>
                 </div>
                 <button
                   onClick={() => setIsSubmitted(false)}
-                  className="mt-4 px-6 py-2.5 font-mono text-xs uppercase tracking-[0.2em] border border-white/15 text-porcelain hover:bg-white/10 transition-colors"
+                  className="rounded-full px-6 py-2.5 text-xs font-medium bg-white/[0.04] border border-white/10 text-porcelain hover:bg-white/[0.08] transition-colors cursor-pointer"
                 >
                   Send Another Inquiry
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <span className="font-mono text-xs uppercase tracking-[0.25em] text-porcelain-dark block mb-2">
-                    Commission Docket
+                  <span className="text-xs font-mono text-crimson uppercase tracking-wider block mb-1">
+                    Bespoke Protocol
                   </span>
-                  <h3 className="font-display text-xl font-normal text-porcelain">
-                    Initiate Custom Order
+                  <h3 className="font-display font-bold text-xl sm:text-2xl text-porcelain">
+                    Commission Docket
                   </h3>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-porcelain-dark block mb-2">
-                      Full Name
-                    </label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-porcelain-muted">Full Name</label>
                     <input
-                      type="text"
                       required
+                      type="text"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="e.g. Tristan Vance"
-                      className="w-full px-3.5 py-2.5 bg-transparent border border-white/15 text-porcelain font-mono text-xs focus:outline-none focus:border-white transition-colors placeholder:text-white/20"
+                      placeholder="Lord / Lady"
+                      className="w-full rounded-xl px-4 py-3 bg-black/40 border border-white/10 text-porcelain text-xs focus:outline-none focus:border-white transition-colors placeholder:text-white/20"
                     />
                   </div>
 
-                  <div>
-                    <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-porcelain-dark block mb-2">
-                      Email Address
-                    </label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-porcelain-muted">Email Dispatch</label>
                     <input
-                      type="email"
                       required
+                      type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="client@domain.com"
-                      className="w-full px-3.5 py-2.5 bg-transparent border border-white/15 text-porcelain font-mono text-xs focus:outline-none focus:border-white transition-colors placeholder:text-white/20"
+                      placeholder="atelier@domain.com"
+                      className="w-full rounded-xl px-4 py-3 bg-black/40 border border-white/10 text-porcelain text-xs focus:outline-none focus:border-white transition-colors placeholder:text-white/20"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-porcelain-dark block mb-2">
-                      Base Ring Chassis
-                    </label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-porcelain-muted">Base Chassis</label>
                     <select
                       value={formData.ringStyle}
                       onChange={(e) => setFormData({ ...formData, ringStyle: e.target.value })}
-                      className="w-full px-3 py-2.5 bg-[#050507] border border-white/15 text-porcelain font-mono text-xs focus:outline-none focus:border-white transition-colors"
+                      className="w-full rounded-xl px-4 py-3 bg-black/50 border border-white/10 text-porcelain text-xs focus:outline-none focus:border-white transition-colors"
                     >
                       {RING_EDITIONS.map((r) => (
-                        <option key={r.id} value={r.id}>
+                        <option key={r.id} value={r.id} className="bg-[#090A0E] text-white">
                           {r.name} (${r.price})
                         </option>
                       ))}
-                      <option value="bespoke">Bespoke Original Blueprint</option>
                     </select>
                   </div>
 
-                  <div>
-                    <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-porcelain-dark block mb-2">
-                      Target US Size
-                    </label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-porcelain-muted">Target US Size</label>
                     <select
                       value={formData.size}
                       onChange={(e) => setFormData({ ...formData, size: e.target.value })}
-                      className="w-full px-3 py-2.5 bg-[#050507] border border-white/15 text-porcelain font-mono text-xs focus:outline-none focus:border-white transition-colors"
+                      className="w-full rounded-xl px-4 py-3 bg-black/50 border border-white/10 text-porcelain text-xs focus:outline-none focus:border-white transition-colors"
                     >
-                      {['US 6', 'US 7', 'US 8', 'US 9', 'US 10', 'US 11', 'US 12', 'Unsure (Sizing Kit Needed)'].map((s) => (
-                        <option key={s} value={s}>
-                          {s}
+                      {['US 6', 'US 7', 'US 8', 'US 9', 'US 10', 'US 11', 'US 12'].map((sz) => (
+                        <option key={sz} value={sz} className="bg-[#090A0E] text-white">
+                          {sz} Comfort-Fit
                         </option>
                       ))}
                     </select>
                   </div>
                 </div>
 
-                <div>
-                  <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-porcelain-dark block mb-2">
-                    Custom Rune / Inscription / Coordinates
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-porcelain-muted">
+                    Custom Runes or Engraving Request
                   </label>
                   <input
                     type="text"
-                    maxLength={28}
+                    maxLength={32}
                     value={formData.engraving}
                     onChange={(e) => setFormData({ ...formData, engraving: e.target.value.toUpperCase() })}
-                    placeholder="e.g. 47°22'N 8°32'E · ELDER RUNES"
-                    className="w-full px-3.5 py-2.5 bg-transparent border border-white/15 text-porcelain font-mono text-xs focus:outline-none focus:border-white transition-colors uppercase placeholder:text-white/20"
+                    placeholder="E.G. LATITUDE · LONGITUDE · LATIN CIPHER"
+                    className="w-full rounded-xl px-4 py-3 bg-black/40 border border-white/10 text-porcelain font-mono text-xs focus:outline-none focus:border-white transition-colors uppercase placeholder:text-white/20"
                   />
                 </div>
 
-                <div>
-                  <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-porcelain-dark block mb-2">
-                    Bespoke Inlay / Metal Preference Notes
-                  </label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-porcelain-muted">Commission Specifications</label>
                   <textarea
                     rows={3}
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    placeholder="Describe custom gemstones, Damascus fold specifications, or personal heirloom requests..."
-                    className="w-full px-3.5 py-2.5 bg-transparent border border-white/15 text-porcelain font-mono text-xs focus:outline-none focus:border-white transition-colors placeholder:text-white/20"
+                    placeholder="Specific requests regarding crystal tints, meteorite inclusion, or presentation lockbox..."
+                    className="w-full rounded-xl px-4 py-3 bg-black/40 border border-white/10 text-porcelain text-xs focus:outline-none focus:border-white transition-colors placeholder:text-white/20"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-4 bg-porcelain text-[#050507] hover:bg-white font-mono text-xs uppercase tracking-[0.25em] font-medium transition-all"
+                  className="w-full rounded-full py-4 bg-[#F5F5F7] text-[#050507] hover:bg-white hover:scale-[1.02] active:scale-95 text-xs font-semibold tracking-wide transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  Transmit Bespoke Docket
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Transmit Commission Docket</span>
                 </button>
               </form>
             )}
           </div>
         </EmergeFromRing>
 
-        {/* Right Column: Atelier Details & Assurance */}
-        <EmergeFromRing originX={-280} originY={50} rotation={-2}>
-          <div className="space-y-8 flex flex-col justify-between h-full">
-            <div className="space-y-6">
-              <div className="p-6 bg-[#07080B] border border-white/[0.08] space-y-3">
-                <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-crimson" />
-                  <span className="font-mono text-xs uppercase tracking-[0.2em] text-porcelain">
-                    Direct Atelier Contact
-                  </span>
-                </div>
-                <p className="font-mono text-sm text-porcelain hover:text-white">
+        {/* Right Column: Direct Atelier Information */}
+        <EmergeFromRing originX={-260} originY={40} rotation={-1.5}>
+          <div className="space-y-5">
+            <div className="rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] p-6 sm:p-7 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-mono text-porcelain-dark">
+                <MapPin className="w-4 h-4 text-crimson" />
+                <span>PRIMARY FACILITY</span>
+              </div>
+              <h4 className="font-display font-semibold text-lg text-porcelain">
+                Zurich High Jewelry Crucible
+              </h4>
+              <p className="text-xs text-porcelain-muted font-light leading-relaxed">
+                Gotthardstrasse 26, 8002 Zürich, Switzerland. By private metallurgical appointment only.
+              </p>
+              <div className="pt-2 text-xs font-mono text-porcelain">
+                <a href="mailto:atelier@kryptos.store" className="hover:underline text-porcelain">
                   atelier@kryptos.store
-                </p>
-                <p className="font-sans text-xs text-porcelain-muted font-light leading-relaxed">
-                  Private consultations conducted Monday through Friday. Zurich Metallurgical Foundry & London Private Vault by prior appointment.
-                </p>
-              </div>
-
-              <div className="p-6 bg-[#07080B] border border-white/[0.08] space-y-3">
-                <div className="flex items-center gap-3">
-                  <Clock className="w-4 h-4 text-crimson" />
-                  <span className="font-mono text-xs uppercase tracking-[0.2em] text-porcelain">
-                    Production & Dispatch Protocol
-                  </span>
-                </div>
-                <p className="font-sans text-xs text-porcelain-muted font-light leading-relaxed">
-                  In-stock archive sizes dispatch within 24 hours via temperature-monitored armored courier. Custom laser inscriptions add 1 business day for diamond chamfering.
-                </p>
-              </div>
-
-              <div className="p-6 bg-[#07080B] border border-white/[0.08] space-y-3">
-                <div className="flex items-center gap-3">
-                  <ShieldCheck className="w-4 h-4 text-crimson" />
-                  <span className="font-mono text-xs uppercase tracking-[0.2em] text-porcelain">
-                    Lifetime Integrity Guarantee
-                  </span>
-                </div>
-                <p className="font-sans text-xs text-porcelain-muted font-light leading-relaxed">
-                  Aerospace tungsten carbide will never bend, distort, or tarnish. Our hallmark guarantees full metallurgical replacement against accidental fracture.
-                </p>
+                </a>
               </div>
             </div>
 
-            {/* Hallmarks Signature */}
-            <div className="pt-6 border-t border-white/[0.08] flex items-center justify-between font-mono text-[11px] text-porcelain-dark">
-              <span>ZURICH · LONDON · REYKJAVIK</span>
-              <span>WC 85.7% · MOHS 9.0</span>
+            <div className="rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] p-6 sm:p-7 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-mono text-porcelain-dark">
+                <Clock className="w-4 h-4 text-crimson" />
+                <span>CONCIERGE PROTOCOL</span>
+              </div>
+              <h4 className="font-display font-semibold text-lg text-porcelain">
+                Global Artisan Support
+              </h4>
+              <p className="text-xs text-porcelain-muted font-light leading-relaxed">
+                Monday through Friday, 08:00–18:00 CET. Secure encrypted inquiries handled within 12 standard business hours.
+              </p>
+            </div>
+
+            <div className="rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] p-6 sm:p-7 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-mono text-porcelain-dark">
+                <ShieldCheck className="w-4 h-4 text-crimson" />
+                <span>ARCHIVE AUTHENTICITY</span>
+              </div>
+              <h4 className="font-display font-semibold text-lg text-porcelain">
+                Laser Hallmark Registry
+              </h4>
+              <p className="text-xs text-porcelain-muted font-light leading-relaxed">
+                Every piece holds a unique cryptographic archive hallmark indexed in our private ledger.
+              </p>
             </div>
           </div>
         </EmergeFromRing>
       </div>
 
-      {/* 3. Shipping & Returns FAQ Accordion (Wrapped in EmergeFromRing) */}
-      <EmergeFromRing originX={-300} originY={60} rotation={-2}>
-        <div className="mt-20 pt-16 border-t border-white/[0.08]">
-          <div className="mb-10">
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-porcelain-dark block mb-2">
-              Atelier Protocol
+      {/* 3. FAQ Accordion (Rounded Glass Panels) */}
+      <EmergeFromRing originX={-280} originY={40} rotation={-1.5}>
+        <div className="mt-20 space-y-6">
+          <div>
+            <span className="text-xs font-mono text-porcelain-dark tracking-widest uppercase block mb-1">
+              Atelier Knowledge Base
             </span>
-            <h3 className="font-display text-2xl sm:text-3xl font-normal text-porcelain">
+            <h3 className="font-display font-bold text-2xl sm:text-3xl text-porcelain">
               Frequently Clarified Inquiries
             </h3>
           </div>
 
-          <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
-            {faqs.map((faq, index) => {
-              const isOpen = openFaq === index;
+          <div className="space-y-3">
+            {faqs.map((faq, idx) => {
+              const isOpen = openFaq === idx;
               return (
-                <div key={index} className="py-4">
+                <div
+                  key={idx}
+                  className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden transition-all duration-300 hover:border-white/15"
+                >
                   <button
-                    onClick={() => setOpenFaq(isOpen ? null : index)}
-                    className="w-full flex items-center justify-between text-left py-2 font-display text-base sm:text-lg text-porcelain hover:text-white transition-colors"
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
                   >
-                    <span>{faq.q}</span>
+                    <span className="font-display font-medium text-sm sm:text-base text-porcelain">
+                      {faq.q}
+                    </span>
                     <ChevronDown
-                      className={`w-4 h-4 text-porcelain-muted transition-transform duration-300 ${
+                      className={`w-4 h-4 text-porcelain-muted transition-transform duration-300 flex-shrink-0 ${
                         isOpen ? 'rotate-180 text-porcelain' : ''
                       }`}
                     />
                   </button>
+
                   {isOpen && (
-                    <div className="pt-2 pb-4 font-sans text-xs sm:text-sm font-light text-porcelain-muted leading-relaxed max-w-2xl animate-fade-in">
+                    <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-porcelain-muted leading-relaxed font-light border-t border-white/[0.04]">
                       {faq.a}
                     </div>
                   )}

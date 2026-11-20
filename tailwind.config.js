@@ -33,11 +33,9 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-        display: ['"Cinzel Decorative"', 'Cinzel', 'serif'],
-        editorial: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+        sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['"Space Grotesk"', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace']
       },
       letterSpacing: {
         tighter: '-0.04em',

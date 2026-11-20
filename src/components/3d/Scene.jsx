@@ -21,7 +21,7 @@ export default function Scene({
         dpr={[1, 2]}
       >
         <Suspense fallback={null}>
-          <StudioLighting />
+          <StudioLighting activeEdition={activeEdition} />
           <KryptosRing
             scrollProgress={scrollProgress}
             activeEdition={activeEdition}

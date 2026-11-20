@@ -139,7 +139,7 @@ export default function App() {
 
   return (
     <div
-      className="relative min-h-screen bg-[#050507] text-porcelain selection:bg-crimson selection:text-white overflow-x-hidden font-sans"
+      className="relative min-h-screen bg-transparent text-porcelain selection:bg-crimson selection:text-white overflow-x-hidden font-sans"
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
@@ -162,7 +162,7 @@ export default function App() {
       <div
         onPointerDown={handlePointerDown}
         className={`hidden lg:flex fixed left-0 top-0 bottom-0 w-[34%] z-20 flex-col justify-end p-10 select-none cursor-grab active:cursor-grabbing transition-opacity duration-500 ${
-          scrollProgress > 0.12 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          scrollProgress > 0.14 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
         <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-porcelain-dark flex items-center justify-between border-t border-white/[0.08] pt-4">
@@ -172,15 +172,17 @@ export default function App() {
       </div>
 
       {/* 4. Natural Document Flow Content */}
-      <div className="relative z-20">
-        {/* Hero Section: Centered macro ring view + wordmark (0% – 18%) */}
+      <div className="relative z-20 bg-transparent">
+        {/* Hero Section: Centered macro ring view + wordmark (0% – 14%) */}
         <Hero
           scrollProgress={scrollProgress}
+          activeEdition={activeEdition}
+          onSelectEdition={setActiveEdition}
           onExploreClick={() => handleNavigate('atelier')}
         />
 
         {/* Right-Hand Content Column (ml-[34%] on desktop) */}
-        <main className="w-full lg:ml-[34%] lg:w-[66%] max-w-4xl px-6 sm:px-10 md:px-14">
+        <main className="w-full lg:ml-[34%] lg:w-[66%] max-w-4xl px-6 sm:px-10 md:px-14 bg-transparent">
           {/* Section 01: Ejected Headline + Interactive Edition Switcher (Unboxed) */}
           <AtelierSection
             activeEdition={activeEdition}

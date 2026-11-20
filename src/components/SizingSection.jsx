@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SIZING_DATA } from '../data/rings';
 import EmergeFromRing from './animation/EmergeFromRing';
+import { Ruler, Info } from 'lucide-react';
 
 export default function SizingSection() {
   const [sliderDiameterMm, setSliderDiameterMm] = useState(19.8); // US 10 default
@@ -13,68 +14,70 @@ export default function SizingSection() {
   });
 
   return (
-    <section id="sizing" className="py-24 border-b border-white/[0.06]">
-      <EmergeFromRing originX={-350} originY={30} rotation={-3}>
+    <section id="sizing" className="py-24 bg-transparent">
+      <EmergeFromRing originX={-320} originY={25} rotation={-2}>
         <div className="mb-14">
-          <div className="flex items-center gap-3 mb-3">
-            <span className="w-6 h-px bg-crimson" />
-            <span className="font-mono text-xs uppercase tracking-[0.28em] text-porcelain-muted">
+          <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 bg-white/[0.04] border border-white/[0.08] mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-crimson" />
+            <span className="text-[11px] font-medium tracking-widest uppercase text-porcelain-muted">
               Fit Protocol · Chapter III
             </span>
           </div>
 
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-porcelain">
+          <h2 className="font-display font-bold text-3xl sm:text-5xl md:text-6xl tracking-tight text-porcelain leading-[1.05]">
             Sizing & Comfort Geometry
           </h2>
 
-          <p className="mt-4 font-serif text-lg sm:text-xl font-light text-porcelain-muted max-w-xl leading-relaxed italic">
-            Tungsten carbide cannot be annealed or stretched. Precision sizing ensures lifetime comfort
-            across our 8.0 mm comfort-fit radial profiles.
+          <p className="mt-4 text-sm sm:text-base font-light text-porcelain-muted max-w-xl leading-relaxed">
+            Tungsten carbide cannot be annealed or stretched. Precision sizing ensures lifetime comfort across our 8.0 mm comfort-fit radial profiles.
           </p>
         </div>
       </EmergeFromRing>
 
-      {/* 1. Interactive Visual Ring-Diameter Matcher */}
-      <EmergeFromRing originX={-320} originY={40} rotation={-2}>
-        <div className="bg-[#08090C] border border-white/[0.08] p-8 sm:p-10 mb-14 space-y-8">
+      {/* 1. Interactive Visual Ring-Diameter Matcher (Zero Sharp Rectangles) */}
+      <EmergeFromRing originX={-280} originY={35} rotation={-1.5}>
+        <div className="rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] p-6 sm:p-10 mb-10 space-y-8 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <span className="font-mono text-xs uppercase tracking-[0.2em] text-crimson font-medium block mb-1">
-                Caliber Gauge
-              </span>
-              <h3 className="font-display text-xl sm:text-2xl font-normal text-porcelain">
+              <div className="flex items-center gap-2 mb-1">
+                <Ruler className="w-4 h-4 text-crimson" />
+                <span className="text-xs font-mono text-crimson font-medium">
+                  CALIBER GAUGE
+                </span>
+              </div>
+              <h3 className="font-display font-bold text-xl sm:text-2xl text-porcelain">
                 Interactive Diameter Matcher
               </h3>
-              <p className="font-sans text-xs text-porcelain-muted mt-1 max-w-md">
-                Place an existing ring flat against your screen and adjust the slider until the perimeter matches your ring's inner edge.
+              <p className="text-xs text-porcelain-muted mt-1 max-w-md font-light">
+                Place an existing ring flat against your screen and adjust the slider until the circle matches your ring's inner bore.
               </p>
             </div>
 
-            <div className="text-right sm:border-l sm:border-white/10 sm:pl-6">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-porcelain-dark block">
+            <div className="rounded-2xl bg-white/[0.04] border border-white/10 px-5 py-3 text-left sm:text-right">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-porcelain-dark block">
                 Detected Fit
               </span>
-              <div className="font-display text-3xl sm:text-4xl text-porcelain font-normal">
+              <div className="font-display text-2xl sm:text-3xl text-porcelain font-bold">
                 US {closestSize.us}
               </div>
-              <span className="font-mono text-xs text-porcelain-muted">
+              <span className="text-xs font-mono text-porcelain-muted">
                 {sliderDiameterMm.toFixed(1)} mm · {(sliderDiameterMm / 25.4).toFixed(3)} in
               </span>
             </div>
           </div>
 
           {/* Visual Circle Display */}
-          <div className="flex flex-col items-center justify-center py-8 bg-[#040405] border border-white/[0.04]">
+          <div className="flex flex-col items-center justify-center py-10 rounded-2xl bg-black/40 border border-white/[0.04]">
             <div
               style={{
                 width: `${sliderDiameterMm * 4.8}px`,
                 height: `${sliderDiameterMm * 4.8}px`
               }}
-              className="rounded-full border border-dashed border-porcelain/60 flex items-center justify-center transition-all duration-150 relative shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+              className="rounded-full border-2 border-dashed border-porcelain/60 flex items-center justify-center transition-all duration-150 relative shadow-[0_0_25px_rgba(255,255,255,0.08)]"
             >
-              <div className="w-1.5 h-1.5 rounded-full bg-crimson" />
-              <div className="absolute inset-x-2 top-1/2 -translate-y-1/2 border-t border-white/20" />
-              <span className="absolute -bottom-6 font-mono text-[10px] text-porcelain-dark tracking-widest">
+              <div className="w-2 h-2 rounded-full bg-crimson" />
+              <div className="absolute inset-x-3 top-1/2 -translate-y-1/2 border-t border-white/20" />
+              <span className="absolute -bottom-7 font-mono text-[11px] text-porcelain-muted tracking-widest">
                 {sliderDiameterMm.toFixed(1)} MM
               </span>
             </div>
@@ -84,7 +87,9 @@ export default function SizingSection() {
           <div className="space-y-3">
             <div className="flex items-center justify-between font-mono text-xs text-porcelain-dark">
               <span>US 6 (16.5 mm)</span>
-              <span className="text-porcelain font-medium">{sliderDiameterMm.toFixed(1)} mm</span>
+              <span className="text-porcelain font-semibold font-display text-sm">
+                {sliderDiameterMm.toFixed(1)} mm
+              </span>
               <span>US 12 (21.4 mm)</span>
             </div>
             <input
@@ -94,69 +99,65 @@ export default function SizingSection() {
               step="0.1"
               value={sliderDiameterMm}
               onChange={(e) => setSliderDiameterMm(parseFloat(e.target.value))}
-              className="w-full accent-white bg-white/10 h-1 rounded-none cursor-pointer"
+              className="w-full accent-white bg-white/10 h-2 rounded-full cursor-pointer"
             />
           </div>
         </div>
       </EmergeFromRing>
 
-      {/* 2. Comprehensive Sizing Chart */}
-      <EmergeFromRing originX={-300} originY={50} rotation={-2}>
-        <div className="space-y-6">
+      {/* 2. ISO 8653 Conversion Table & Fit Guidance (Rounded Pill Architecture) */}
+      <EmergeFromRing originX={-260} originY={40} rotation={-1.5}>
+        <div className="rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] p-6 sm:p-8 space-y-6">
           <div className="flex items-center justify-between">
-            <h4 className="font-display text-xl font-normal text-porcelain">
-              Standard Metric & Imperial Index
+            <h4 className="font-display font-semibold text-lg text-porcelain">
+              ISO 8653 Metric Sizing Standards
             </h4>
-            <span className="font-mono text-xs text-porcelain-dark">
-              ISO 8653 Certified
+            <span className="text-xs font-mono text-porcelain-dark">
+              US 6 – US 12
             </span>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left font-mono text-xs border-collapse">
-              <thead>
-                <tr className="border-b border-white/15 text-porcelain-dark uppercase tracking-[0.18em] text-[10px]">
-                  <th className="py-3 px-3">US Size</th>
-                  <th className="py-3 px-3">Inner Diameter (mm)</th>
-                  <th className="py-3 px-3">Inner Diameter (in)</th>
-                  <th className="py-3 px-3">Circumference (mm)</th>
-                  <th className="py-3 px-3 text-right">Band Match</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/[0.06] text-porcelain-muted">
-                {SIZING_DATA.map((row) => {
-                  const isCurrent = closestSize.us === row.us;
-                  return (
-                    <tr
-                      key={row.us}
-                      className={`transition-colors ${
-                        isCurrent ? 'bg-white/[0.04] text-porcelain font-medium' : 'hover:bg-white/[0.02]'
-                      }`}
-                    >
-                      <td className="py-3.5 px-3 font-medium text-porcelain">
-                        US {row.us}
-                      </td>
-                      <td className="py-3.5 px-3">{row.insideDiameterMm} mm</td>
-                      <td className="py-3.5 px-3">{row.insideDiameterIn} in</td>
-                      <td className="py-3.5 px-3">{row.insideCircumferenceMm} mm</td>
-                      <td className="py-3.5 px-3 text-right">
-                        {isCurrent ? (
-                          <span className="text-crimson font-medium">Selected</span>
-                        ) : (
-                          <span className="text-white/20">8.0 mm Comfort</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className="rounded-2xl overflow-hidden border border-white/[0.06] bg-black/30">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-white/[0.08] text-porcelain-dark font-mono text-[10px] uppercase tracking-wider bg-white/[0.02]">
+                    <th className="py-3 px-4">US Size</th>
+                    <th className="py-3 px-4">Inside Diameter</th>
+                    <th className="py-3 px-4">Inches</th>
+                    <th className="py-3 px-4">Inside Circumference</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/[0.04]">
+                  {SIZING_DATA.map((row) => {
+                    const isMatched = closestSize.us === row.us;
+                    return (
+                      <tr
+                        key={row.us}
+                        className={`transition-colors ${
+                          isMatched ? 'bg-white/[0.08] font-semibold text-porcelain' : 'text-porcelain-muted hover:bg-white/[0.02]'
+                        }`}
+                      >
+                        <td className="py-3 px-4 font-mono font-medium text-porcelain">
+                          US {row.us} {isMatched && '★'}
+                        </td>
+                        <td className="py-3 px-4 font-mono">{row.insideDiameterMm} mm</td>
+                        <td className="py-3 px-4 font-mono">{row.insideDiameterIn}"</td>
+                        <td className="py-3 px-4 font-mono">{row.insideCircumferenceMm} mm</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          {/* Wide Band Guidance Note */}
-          <div className="p-4 bg-white/[0.02] border border-white/[0.06] font-sans text-xs text-porcelain-muted leading-relaxed font-light">
-            <strong className="text-porcelain font-medium">Wide 8.0 mm Band Sizing Advisory: </strong>
-            Because our rings feature an 8.0 mm wide comfort-fit profile, they cover a wider skin surface than delicate 3–4mm bands. If your standard measurement falls between two sizes, we advise selecting the larger size for optimal airflow and effortless removal.
+          {/* Ergonomic Guidance Box */}
+          <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-4 flex items-start gap-3">
+            <Info className="w-4 h-4 text-porcelain-muted flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-porcelain-muted leading-relaxed font-light">
+              <strong className="text-porcelain font-medium">8.0 mm Wide Comfort-Fit Fit Advice:</strong> Because our rings feature a domed interior radial bore, they slide on smoothly over knuckles. If you normally wear a narrow 4mm band, order your true size; if you are between two sizes, we recommend selecting the smaller half-size.
+            </p>
           </div>
         </div>
       </EmergeFromRing>

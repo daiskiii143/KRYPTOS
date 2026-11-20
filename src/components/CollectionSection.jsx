@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { RING_EDITIONS, RING_CATEGORIES } from '../data/rings';
 import EmergeFromRing from './animation/EmergeFromRing';
+import { Check, Eye, Plus } from 'lucide-react';
 
 export default function CollectionSection({ onOpenInspect, onAddToVault }) {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -21,42 +22,41 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
     const size = selectedSizes[ring.id] || '10';
     onAddToVault(ring, `US ${size}`, '');
     setQuickAddedId(ring.id);
-    setTimeout(() => setQuickAddedId(null), 1200);
+    setTimeout(() => setQuickAddedId(null), 1400);
   };
 
   return (
-    <section id="collection" className="py-24 border-b border-white/[0.06]">
+    <section id="collection" className="py-24 bg-transparent">
       {/* 1. Collection Header (EmergeFromRing) */}
-      <EmergeFromRing originX={-360} originY={30} rotation={-3}>
+      <EmergeFromRing originX={-340} originY={30} rotation={-2}>
         <div className="mb-14">
-          <div className="flex items-center gap-3 mb-3">
-            <span className="w-6 h-px bg-crimson" />
-            <span className="font-mono text-xs uppercase tracking-[0.28em] text-porcelain-muted">
+          <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 bg-white/[0.04] border border-white/[0.08] mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-crimson" />
+            <span className="text-[11px] font-medium tracking-widest uppercase text-porcelain-muted">
               Permanent Archive · Chapter II
             </span>
           </div>
 
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-porcelain">
+          <h2 className="font-display font-bold text-3xl sm:text-5xl md:text-6xl tracking-tight text-porcelain leading-[1.05]">
             The Six Formations
           </h2>
 
-          <p className="mt-4 font-serif text-lg sm:text-xl font-light text-porcelain-muted max-w-xl leading-relaxed italic">
-            Six distinct expressions of gothic metallurgy and gemstone inlay, resting upon dark volcanic slate.
-            Engineered in 8.0 mm comfort-fit profiles.
+          <p className="mt-4 text-sm sm:text-base font-light text-porcelain-muted max-w-xl leading-relaxed">
+            Six distinct expressions of gothic metallurgy and gemstone inlay, resting upon dark volcanic slate. Engineered in 8.0 mm comfort-fit profiles.
           </p>
 
-          {/* Category Filter Pills */}
-          <div className="mt-8 flex flex-wrap items-center gap-2 border-b border-white/[0.08] pb-4">
+          {/* Category Filter Pills (Zero Sharp Rectangles) */}
+          <div className="mt-8 flex flex-wrap items-center gap-2">
             {RING_CATEGORIES.map((cat) => {
               const isSelected = activeCategory === cat.id;
               return (
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] transition-all ${
+                  className={`rounded-full px-5 py-2 text-xs font-medium transition-all duration-200 cursor-pointer ${
                     isSelected
-                      ? 'bg-porcelain text-[#050507] font-medium'
-                      : 'border border-white/10 text-porcelain-muted hover:border-white/25 hover:text-porcelain bg-transparent'
+                      ? 'bg-[#F5F5F7] text-[#050507] shadow-md scale-105 font-semibold'
+                      : 'bg-white/[0.03] border border-white/[0.08] text-porcelain-muted hover:text-porcelain hover:bg-white/[0.08]'
                   }`}
                 >
                   {cat.label}
@@ -67,8 +67,8 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
         </div>
       </EmergeFromRing>
 
-      {/* 2. Full 6-Ring Grid with Macro Photography (Wrapped in EmergeFromRing per item/row) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-16">
+      {/* 2. Full 6-Ring Grid with Macro Photography (Wrapped in EmergeFromRing per item) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {filteredRings.map((ring, idx) => {
           const currentSize = selectedSizes[ring.id] || '10';
           const isJustAdded = quickAddedId === ring.id;
@@ -76,33 +76,41 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
           return (
             <EmergeFromRing
               key={ring.id}
-              originX={-320 - (idx % 2) * 60}
-              originY={40 + (idx % 2) * 20}
-              rotation={idx % 2 === 0 ? -3 : -2}
+              originX={-280 - (idx % 2) * 50}
+              originY={35 + (idx % 2) * 15}
+              rotation={idx % 2 === 0 ? -2.5 : -1.5}
               className="group"
             >
-              <div className="flex flex-col justify-between h-full bg-[#07080B] border border-white/[0.08] p-6 hover:border-white/25 transition-all duration-500">
+              <div className="flex flex-col justify-between h-full rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] p-5 sm:p-6 hover:border-white/20 hover:bg-white/[0.05] transition-all duration-500 shadow-[0_15px_40px_rgba(0,0,0,0.5)] overflow-hidden">
                 {/* Product Photography Container */}
                 <div
                   onClick={() => onOpenInspect(ring)}
-                  className="relative aspect-square w-full overflow-hidden bg-[#040405] cursor-pointer mb-6"
+                  className="relative aspect-square w-full rounded-2xl overflow-hidden bg-black/50 cursor-pointer mb-5 group/img"
                 >
                   <img
                     src={ring.image}
                     alt={ring.name}
-                    className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                    className="w-full h-full object-cover object-center transform group-hover/img:scale-105 transition-transform duration-700 ease-out"
                   />
                   {/* Subtle rim highlight gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#07080B] via-transparent to-transparent opacity-60" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
 
-                  {/* Edition Tag */}
-                  <div className="absolute top-4 left-4 font-mono text-[10px] tracking-[0.25em] uppercase text-porcelain-dark bg-[#050507]/80 backdrop-blur-md px-2.5 py-1 border border-white/10">
+                  {/* Edition Tag Pill */}
+                  <div className="absolute top-3.5 left-3.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 border border-white/10 text-[10px] font-mono tracking-wider uppercase text-porcelain-muted">
                     EDITION {ring.editionNumber}
                   </div>
 
-                  {/* Price Tag */}
-                  <div className="absolute top-4 right-4 font-mono text-xs text-porcelain bg-[#050507]/80 backdrop-blur-md px-2.5 py-1 border border-white/10 font-medium">
+                  {/* Price Tag Pill */}
+                  <div className="absolute top-3.5 right-3.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 border border-white/10 font-mono text-xs font-semibold text-porcelain">
                     ${ring.price}
+                  </div>
+
+                  {/* Hover Inspect Icon */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity bg-black/20 backdrop-blur-[2px]">
+                    <span className="rounded-full bg-white/15 backdrop-blur-md px-4 py-2 border border-white/20 text-xs font-medium text-porcelain flex items-center gap-1.5">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Inspect Specimen</span>
+                    </span>
                   </div>
                 </div>
 
@@ -110,43 +118,46 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-crimson font-medium">
+                      <span className="text-[11px] font-medium uppercase tracking-wider text-crimson">
                         {ring.category}
                       </span>
-                      <span className="font-mono text-[11px] text-porcelain-dark">
+                      <span className="text-xs font-mono text-porcelain-dark">
                         {ring.weight.split('(')[0]}
                       </span>
                     </div>
 
                     <h3
                       onClick={() => onOpenInspect(ring)}
-                      className="font-display text-xl sm:text-2xl font-normal text-porcelain tracking-wide cursor-pointer hover:text-white transition-colors"
+                      className="font-display font-bold text-xl sm:text-2xl text-porcelain tracking-tight cursor-pointer hover:text-white transition-colors"
                     >
                       {ring.name}
                     </h3>
 
-                    <p className="mt-2 font-serif text-sm font-light text-porcelain-muted leading-relaxed italic">
+                    <p className="mt-2 text-xs sm:text-sm font-light text-porcelain-muted leading-relaxed line-clamp-2">
                       {ring.subtitle}
                     </p>
                   </div>
 
-                  {/* Quick Size Selector */}
-                  <div className="mt-6 pt-4 border-t border-white/[0.06]">
+                  {/* Quick Size Selector Pills */}
+                  <div className="mt-5 pt-4 border-t border-white/[0.06]">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-porcelain-dark">
-                        Select Size
+                      <span className="text-[11px] text-porcelain-muted">
+                        Select Comfort Size
                       </span>
-                      <span className="font-mono text-[11px] text-porcelain">US {currentSize}</span>
+                      <span className="text-xs font-mono text-porcelain font-semibold">
+                        US {currentSize}
+                      </span>
                     </div>
+
                     <div className="flex items-center gap-1.5">
                       {ring.sizes.map((sz) => (
                         <button
                           key={sz}
                           onClick={() => handleSizeChange(ring.id, sz)}
-                          className={`flex-1 py-1.5 font-mono text-[11px] transition-all ${
+                          className={`flex-1 py-1.5 rounded-full text-xs font-mono transition-all duration-200 cursor-pointer ${
                             currentSize === sz
-                              ? 'bg-porcelain text-[#050507] font-medium'
-                              : 'border border-white/10 text-porcelain-dark hover:text-porcelain hover:border-white/25'
+                              ? 'bg-[#F5F5F7] text-[#050507] font-bold shadow-sm'
+                              : 'bg-white/[0.03] border border-white/[0.08] text-porcelain-muted hover:text-porcelain hover:bg-white/[0.08]'
                           }`}
                         >
                           {sz}
@@ -155,24 +166,36 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
                     </div>
                   </div>
 
-                  {/* Actions */}
-                  <div className="mt-6 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.18em]">
+                  {/* Pill Action Buttons */}
+                  <div className="mt-5 flex items-center gap-2.5">
                     <button
                       onClick={() => handleQuickAdd(ring)}
                       disabled={isJustAdded}
-                      className={`flex-1 py-3 text-center transition-all ${
+                      className={`flex-1 py-3 rounded-full text-xs font-medium tracking-wide transition-all duration-300 flex items-center justify-center gap-1.5 shadow-sm cursor-pointer ${
                         isJustAdded
                           ? 'bg-emerald-600 text-white'
-                          : 'bg-white/10 hover:bg-white/20 text-porcelain border border-white/15'
+                          : 'bg-[#F5F5F7] text-[#050507] hover:bg-white hover:scale-105 active:scale-95 font-semibold'
                       }`}
                     >
-                      {isJustAdded ? 'Added' : 'Add to Vault'}
+                      {isJustAdded ? (
+                        <>
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Added</span>
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add to Vault</span>
+                        </>
+                      )}
                     </button>
+
                     <button
                       onClick={() => onOpenInspect(ring)}
-                      className="px-4 py-3 border border-white/15 hover:border-white/35 text-porcelain-muted hover:text-porcelain transition-all"
+                      className="px-4 py-3 rounded-full bg-white/[0.04] hover:bg-white/[0.10] active:scale-95 border border-white/10 text-xs font-medium text-porcelain transition-all cursor-pointer flex items-center gap-1.5"
                     >
-                      Inspect
+                      <Eye className="w-3.5 h-3.5 text-porcelain-muted" />
+                      <span>Inspect</span>
                     </button>
                   </div>
                 </div>

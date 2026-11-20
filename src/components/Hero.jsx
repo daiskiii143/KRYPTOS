@@ -1,114 +1,186 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
-export default function Hero({ scrollProgress = 0, onExploreClick }) {
-  // Normalize hero ejection progress from 0% to 18% scroll
-  const heroProgress = Math.min(Math.max(scrollProgress / 0.18, 0), 1);
-  const fadeOutProgress = Math.min(Math.max((scrollProgress - 0.14) / 0.08, 0), 1);
+const FEATURED_HERO_RINGS = [
+  {
+    id: 'sovereign',
+    name: 'The Sovereign',
+    price: '$480',
+    subtitle: 'Crimson Pearloid & Filigree',
+    image: '/images/rings/sovereign.png',
+    accentColor: '#DC2626',
+    glowClass: 'shadow-[0_0_25px_rgba(220,38,38,0.25)]'
+  },
+  {
+    id: 'eclipse',
+    name: 'The Eclipse',
+    price: '$440',
+    subtitle: 'Faceted Obsidian Armor',
+    image: '/images/rings/eclipse.png',
+    accentColor: '#94A3B8',
+    glowClass: 'shadow-[0_0_25px_rgba(148,163,184,0.25)]'
+  },
+  {
+    id: 'aether',
+    name: 'The Aether Relic',
+    price: '$520',
+    subtitle: 'Carved Claw & Emerald Core',
+    image: '/images/rings/aether.png',
+    accentColor: '#10B981',
+    glowClass: 'shadow-[0_0_25px_rgba(16,185,129,0.25)]'
+  }
+];
+
+export default function Hero({
+  scrollProgress = 0,
+  activeEdition = 'sovereign',
+  onSelectEdition,
+  onExploreClick
+}) {
+  // Hero sticky fade out as user scrolls past 14%
+  const fadeOutProgress = Math.min(Math.max((scrollProgress - 0.12) / 0.08, 0), 1);
   const heroOpacity = Math.max(0, 1 - fadeOutProgress);
 
-  // Emerge words from center of ring as scroll starts
-  // Word milestones across 0.0 -> 1.0 of heroProgress
-  const getEmergeStyle = (start, end, targetDeltaX = 0, targetDeltaY = 0) => {
-    const p = Math.min(Math.max((heroProgress - start) / (end - start), 0), 1);
-    // Smooth power-out easing
-    const eased = 1 - Math.pow(1 - p, 3);
-    
-    // Starts at ring center (scale 0.1, blurred, transparent) and arcs out to final slot
-    const scale = 0.1 + eased * 0.9;
-    const opacity = p === 0 ? 0 : Math.min(p * 1.5, 1);
-    const blur = (1 - eased) * 8;
-    const x = (1 - eased) * -targetDeltaX;
-    const y = (1 - eased) * targetDeltaY;
-
-    return {
-      transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`,
-      opacity,
-      filter: `blur(${blur.toFixed(1)}px)`
-    };
-  };
+  const activeRing = FEATURED_HERO_RINGS.find((r) => r.id === activeEdition) || FEATURED_HERO_RINGS[0];
 
   return (
     <section
       id="hero"
-      className="relative min-h-[140vh] w-full flex flex-col items-center justify-start pt-28 px-6 pointer-events-none select-none"
+      className="relative min-h-[140vh] w-full flex flex-col justify-start bg-transparent pointer-events-none select-none"
     >
       {/* Sticky Hero Viewport Container */}
       <div
         style={{ opacity: heroOpacity }}
-        className="sticky top-0 h-screen w-full flex flex-col items-center justify-between py-12 transition-opacity duration-300"
+        className="sticky top-0 h-screen w-full flex flex-col justify-between pt-24 pb-8 sm:pb-12 px-6 sm:px-10 md:px-14 transition-opacity duration-300"
       >
-        {/* Top Space below Navigation */}
-        <div className="h-6" />
-
-        {/* 1. KRYPTOS Display Brand Mark (Cinzel Decorative) */}
-        <div className="text-center flex flex-col items-center z-20 pointer-events-auto">
+        {/* 1. Giant Watermark Layer (Poster Depth Behind 3D Ring) */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0">
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            key={activeRing.id}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+            className="font-display font-bold text-[18vw] leading-none tracking-tighter text-white/[0.03] select-none uppercase whitespace-nowrap"
           >
-            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.38em] text-porcelain-muted block mb-3">
-              Subterranean High Jewelry Atelier
-            </span>
-            <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-normal tracking-[0.24em] text-porcelain uppercase drop-shadow-[0_10px_35px_rgba(0,0,0,0.9)]">
-              KRYPTOS
-            </h1>
+            {activeRing.id === 'sovereign' ? 'SOVEREIGN' : activeRing.id === 'eclipse' ? 'ECLIPSE' : 'KRYPTOS'}
           </motion.div>
         </div>
 
-        {/* 2. Center Ring Manifestation Arena: Words Literally Emerge Out of the Ring */}
-        <div className="relative w-full max-w-4xl h-44 sm:h-52 flex items-center justify-center pointer-events-auto">
-          {/* Emerged Word Arc 1: Left Flank */}
-          <div
-            style={getEmergeStyle(0.08, 0.55, 180, 20)}
-            className="absolute left-4 sm:left-12 lg:left-20 top-1/2 -translate-y-1/2 text-left"
-          >
-            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.28em] text-crimson block font-medium">
-              Origin 01
+        {/* 2. Top Editorial Eyebrow */}
+        <div className="relative z-20 pointer-events-auto flex items-center justify-between">
+          <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 bg-white/[0.04] backdrop-blur-xl border border-white/[0.08]">
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ backgroundColor: activeRing.accentColor }}
+            />
+            <span className="text-[11px] font-medium tracking-widest uppercase text-porcelain-muted">
+              Subterranean Atelier · Series 2026
             </span>
-            <p className="font-serif text-lg sm:text-2xl text-porcelain italic font-light tracking-wide leading-tight">
-              Forged in obsidian.
-            </p>
           </div>
 
-          {/* Emerged Word Arc 2: Right Flank */}
-          <div
-            style={getEmergeStyle(0.18, 0.65, -180, 20)}
-            className="absolute right-4 sm:right-12 lg:right-20 top-1/2 -translate-y-1/2 text-right"
-          >
-            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.28em] text-porcelain-muted block">
-              Origin 02
-            </span>
-            <p className="font-serif text-lg sm:text-2xl text-porcelain italic font-light tracking-wide leading-tight">
-              Sealed in crimson.
-            </p>
-          </div>
-
-          {/* Emerged Technical Metrics: Bottom Center Arc */}
-          <div
-            style={getEmergeStyle(0.32, 0.85, 0, -40)}
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 text-center whitespace-nowrap"
-          >
-            <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-porcelain-dark flex items-center gap-3 bg-[#050507]/60 backdrop-blur-md px-4 py-2 border border-white/[0.06]">
-              <span>Mohs 9.0 Sinter</span>
-              <span>·</span>
-              <span>1,500°C Vacuum Crucible</span>
-              <span>·</span>
-              <span>Rhodium Relief</span>
-            </div>
+          <div className="hidden sm:flex items-center gap-3 text-xs text-porcelain-dark font-mono">
+            <span>MOHS 9.0</span>
+            <span>·</span>
+            <span>TUNGSTEN CARBIDE</span>
+            <span>·</span>
+            <span>COMFORT FIT</span>
           </div>
         </div>
 
-        {/* 3. Bottom Subtle Scroll Cue */}
-        <div
-          onClick={onExploreClick}
-          className="flex flex-col items-center gap-2 pointer-events-auto cursor-pointer group transition-opacity duration-300"
-        >
-          <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.28em] uppercase text-porcelain-muted group-hover:text-porcelain transition-colors">
-            Scroll to emerge the archive
-          </span>
-          <div className="w-px h-7 bg-white/25 group-hover:bg-white/60 transition-colors animate-pulse" />
+        {/* 3. Left Editorial Headline & Pill CTA */}
+        <div className="relative z-20 pointer-events-auto max-w-xl my-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <h1 className="font-display font-bold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tighter text-porcelain leading-[0.96] mb-5">
+              KRYPTOS <span className="block text-white/50 text-3xl sm:text-5xl md:text-6xl font-light">Forged in Obsidian.</span>
+            </h1>
+
+            <p className="text-sm sm:text-base text-porcelain-muted max-w-md font-light leading-relaxed mb-8">
+              Subterranean high jewelry sintered under 1,500°C vacuum crucibles with cryogenic crystal stabilization. Engineered for eternal presence.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <button
+                onClick={onExploreClick}
+                className="rounded-full bg-[#F5F5F7] text-[#050507] hover:bg-white hover:scale-105 active:scale-95 transition-all duration-300 px-7 py-3.5 font-medium text-xs sm:text-sm tracking-wide shadow-[0_10px_30px_rgba(255,255,255,0.15)] flex items-center gap-2.5 cursor-pointer group"
+              >
+                <span>Explore Editions</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </button>
+
+              <div className="hidden md:flex items-center gap-2 text-xs text-porcelain-muted px-4 py-2 rounded-full bg-white/[0.02] border border-white/[0.05]">
+                <Sparkles className="w-3.5 h-3.5 text-crimson" />
+                <span>Complimentary custom fiber laser engraving</span>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* 4. Bottom Floating Ring Switcher Dock (Inspired by Reference Video) */}
+        <div className="relative z-20 pointer-events-auto flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
+          <div className="w-full sm:w-auto">
+            <span className="text-[10px] font-mono tracking-widest uppercase text-porcelain-dark block mb-2 px-1">
+              Live 3D Specimen Dock
+            </span>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full sm:max-w-2xl">
+              {FEATURED_HERO_RINGS.map((ring) => {
+                const isActive = activeEdition === ring.id;
+                return (
+                  <div
+                    key={ring.id}
+                    onClick={() => onSelectEdition && onSelectEdition(ring.id)}
+                    className={`rounded-2xl backdrop-blur-xl border p-3 sm:p-3.5 flex items-center gap-3 transition-all duration-300 cursor-pointer group ${
+                      isActive
+                        ? `bg-white/[0.08] border-white/30 shadow-[0_10px_30px_rgba(0,0,0,0.6)] ${ring.glowClass}`
+                        : 'bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06] hover:border-white/20'
+                    }`}
+                  >
+                    {/* Ring Photo breaking slightly above / left */}
+                    <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0 -mt-2 -ml-1 transition-transform group-hover:scale-110">
+                      <img
+                        src={ring.image}
+                        alt={ring.name}
+                        className="w-full h-full object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.8)]"
+                      />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-1">
+                        <h4 className="font-display font-semibold text-xs sm:text-sm text-porcelain truncate">
+                          {ring.name}
+                        </h4>
+                        <span className="text-xs text-porcelain-muted font-medium font-mono">
+                          {ring.price}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-porcelain-dark truncate">
+                        {ring.subtitle}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Minimal Scroll Cue */}
+          <div
+            onClick={onExploreClick}
+            className="hidden lg:flex flex-col items-center gap-2 cursor-pointer group pb-2"
+          >
+            <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-porcelain-dark group-hover:text-porcelain transition-colors">
+              Scroll to launch archive
+            </span>
+            <div className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center p-1">
+              <div className="w-1 h-2 rounded-full bg-white/60 animate-bounce" />
+            </div>
+          </div>
         </div>
       </div>
     </section>

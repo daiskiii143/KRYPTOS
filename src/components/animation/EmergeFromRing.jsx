@@ -11,30 +11,30 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 export default function EmergeFromRing({
   children,
   className = '',
-  originX = -320,
-  originY = 40,
-  rotation = -3,
+  originX = -260,
+  originY = 30,
+  rotation = -2.5,
   blur = 6,
-  springConfig = { stiffness: 95, damping: 22, mass: 0.75 }
+  springConfig = { stiffness: 90, damping: 20, mass: 0.7 }
 }) {
   const containerRef = useRef(null);
 
   // Track scroll position of this element entering the viewport
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start end', 'start 0.65']
+    offset: ['start end', 'start 0.70']
   });
 
-  // Physics spring smoothing for elastic, tactile movement
+  // Physics spring smoothing for tactile momentum
   const smoothProgress = useSpring(scrollYProgress, springConfig);
 
-  // Transforms: from compressed inside ring to full editorial position
-  const scale = useTransform(smoothProgress, [0, 1], [0.35, 1]);
-  const opacity = useTransform(smoothProgress, [0, 0.15, 0.85, 1], [0.05, 0.7, 1, 1]);
+  // Transforms: from compressed inside ring to full editorial slot
+  const scale = useTransform(smoothProgress, [0, 1], [0.25, 1]);
+  const opacity = useTransform(smoothProgress, [0, 0.2, 0.9, 1], [0.05, 0.65, 1, 1]);
   
-  // Responsive translation arc: arcs from left-rail ring position to 0
-  const x = useTransform(smoothProgress, [0, 0.45, 1], [originX, originX * 0.25, 0]);
-  const y = useTransform(smoothProgress, [0, 0.5, 1], [originY, originY * -0.2, 0]);
+  // Responsive translation arc: originates from docked left-rail ring coordinates
+  const x = useTransform(smoothProgress, [0, 0.45, 1], [originX, originX * 0.2, 0]);
+  const y = useTransform(smoothProgress, [0, 0.5, 1], [originY, originY * -0.15, 0]);
   const rotate = useTransform(smoothProgress, [0, 1], [rotation, 0]);
   
   const filter = useTransform(smoothProgress, (val) => {

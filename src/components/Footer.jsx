@@ -2,58 +2,39 @@ import React from 'react';
 
 export default function Footer({ onNavigate }) {
   return (
-    <footer className="py-24 border-t border-white/[0.08] text-porcelain-muted font-mono text-xs">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
+    <footer className="py-20 mt-16 border-t border-white/[0.08] text-porcelain-muted text-xs bg-transparent">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
         <div>
-          <span className="font-display text-lg tracking-[0.25em] text-porcelain uppercase block mb-1">
+          <span className="font-display font-bold text-lg tracking-tight text-porcelain uppercase block mb-1">
             KRYPTOS
           </span>
-          <p className="font-mono text-[11px] text-porcelain-dark max-w-sm">
+          <p className="text-xs text-porcelain-muted max-w-sm font-light">
             Subterranean High Jewelry Atelier · Tungsten Metallurgy Sintering · Comfort-Fit Geometry
           </p>
-          <p className="font-mono text-[11px] text-crimson mt-2">
+          <p className="text-xs text-crimson font-mono mt-2">
             atelier@kryptos.store
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-6 text-[11px] uppercase tracking-[0.2em]">
-          <button
-            onClick={() => onNavigate('hero')}
-            className="hover:text-porcelain transition-colors"
-          >
-            Top
-          </button>
-          <span className="text-white/20 select-none">·</span>
-          <button
-            onClick={() => onNavigate('atelier')}
-            className="hover:text-porcelain transition-colors"
-          >
-            Atelier
-          </button>
-          <span className="text-white/20 select-none">·</span>
-          <button
-            onClick={() => onNavigate('collection')}
-            className="hover:text-porcelain transition-colors"
-          >
-            Collection
-          </button>
-          <span className="text-white/20 select-none">·</span>
-          <button
-            onClick={() => onNavigate('sizing')}
-            className="hover:text-porcelain transition-colors"
-          >
-            Sizing Guide
-          </button>
-          <span className="text-white/20 select-none">·</span>
-          <button
-            onClick={() => onNavigate('contact')}
-            className="hover:text-porcelain transition-colors"
-          >
-            Contact
-          </button>
+        <div className="flex flex-wrap items-center gap-3 text-xs">
+          {[
+            { id: 'hero', label: 'Top' },
+            { id: 'atelier', label: 'Atelier' },
+            { id: 'collection', label: 'Collection' },
+            { id: 'sizing', label: 'Sizing' },
+            { id: 'contact', label: 'Contact' }
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => onNavigate(item.id)}
+              className="rounded-full px-3.5 py-1.5 bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.08] hover:text-porcelain transition-all cursor-pointer"
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
 
-        <div className="text-[11px] text-porcelain-dark text-right">
+        <div className="text-xs text-porcelain-dark font-mono text-left md:text-right">
           <div>ZURICH · LONDON · REYKJAVIK</div>
           <div className="mt-1">© 2026 KRYPTOS. All rights reserved.</div>
         </div>

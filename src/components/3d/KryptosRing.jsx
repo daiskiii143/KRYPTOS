@@ -178,13 +178,13 @@ export default function KryptosRing({
 
     const isMobile = window.innerWidth < 1024;
 
-    if (scrollProgress <= 0.12) {
+    if (scrollProgress <= 0.14) {
       // -------------------------------------------------------------------
-      // HERO PHASE (scroll = 0% – 12%): Centered Macro View of the Ring
+      // HERO PHASE (scroll = 0% – 14%): Bold Large Macro View of the Ring (scale: 1.55)
       // -------------------------------------------------------------------
-      const targetScale = isMobile ? 0.85 : 1.05;
+      const targetScale = isMobile ? 1.25 : 1.55;
       const targetX = 0;
-      const targetY = isMobile ? -0.1 : 0;
+      const targetY = isMobile ? -0.12 : 0;
       const targetZ = 0;
 
       outerGroupRef.current.position.x = THREE.MathUtils.lerp(outerGroupRef.current.position.x, targetX, 0.1);
@@ -192,8 +192,8 @@ export default function KryptosRing({
       outerGroupRef.current.position.z = THREE.MathUtils.lerp(outerGroupRef.current.position.z, targetZ, 0.1);
       outerGroupRef.current.scale.setScalar(THREE.MathUtils.lerp(outerGroupRef.current.scale.x, targetScale, 0.1));
 
-      // Fixed subtle hero tilt that stays calm and consistent - NEVER flip sideways or tumble
-      outerGroupRef.current.rotation.set(0.34, 0, -0.16);
+      // Fixed subtle hero tilt that stays calm and consistent: [0.32, 0, -0.15]
+      outerGroupRef.current.rotation.set(0.32, 0, -0.15);
 
       // Spin ONLY on its single local axis (rotation.y) + subtle idle drift + user drag
       const idleSpin = state.clock.elapsedTime * 0.18;
@@ -204,29 +204,29 @@ export default function KryptosRing({
       innerSpinRef.current.rotation.z = 0;
     } else {
       // -------------------------------------------------------------------
-      // LEFT-RAIL SCROLL DIAL PHASE (scroll > 12%):
-      // Docks to left rail (scale = 0.36, X = -2.35 on desktop)
+      // LEFT-RAIL SCROLL DIAL PHASE (scroll > 14%):
+      // Docks to left rail (scale = 0.52, X = -2.2 on desktop)
       // -------------------------------------------------------------------
-      const dockProgress = THREE.MathUtils.clamp((scrollProgress - 0.12) / 0.08, 0, 1);
+      const dockProgress = THREE.MathUtils.clamp((scrollProgress - 0.14) / 0.10, 0, 1);
       const easeDock = 1 - Math.pow(1 - dockProgress, 3);
 
-      const targetX = isMobile ? 0 : THREE.MathUtils.lerp(0, -2.35, easeDock);
-      const targetY = isMobile ? 1.4 : 0;
+      const targetX = isMobile ? 0 : THREE.MathUtils.lerp(0, -2.2, easeDock);
+      const targetY = isMobile ? 1.3 : 0;
       const targetZ = 0;
       const targetScale = isMobile
-        ? THREE.MathUtils.lerp(0.85, 0.28, easeDock)
-        : THREE.MathUtils.lerp(1.05, 0.36, easeDock);
+        ? THREE.MathUtils.lerp(1.25, 0.40, easeDock)
+        : THREE.MathUtils.lerp(1.55, 0.52, easeDock);
 
       outerGroupRef.current.position.x = THREE.MathUtils.lerp(outerGroupRef.current.position.x, targetX, 0.1);
       outerGroupRef.current.position.y = THREE.MathUtils.lerp(outerGroupRef.current.position.y, targetY, 0.1);
       outerGroupRef.current.position.z = THREE.MathUtils.lerp(outerGroupRef.current.position.z, targetZ, 0.1);
       outerGroupRef.current.scale.setScalar(THREE.MathUtils.lerp(outerGroupRef.current.scale.x, targetScale, 0.1));
 
-      // Outer tilt stays completely locked at [0.34, 0, -0.16]
-      outerGroupRef.current.rotation.set(0.34, 0, -0.16);
+      // Outer tilt stays completely locked at [0.32, 0, -0.15]
+      outerGroupRef.current.rotation.set(0.32, 0, -0.15);
 
       // Inner spin: Spin ONLY on its single local axis mapped smoothly to scroll progress + subtle idle drift
-      const scrollSpin = ((scrollProgress - 0.12) / 0.88) * Math.PI * 5.0;
+      const scrollSpin = ((scrollProgress - 0.14) / 0.86) * Math.PI * 5.0;
       const idleDrift = state.clock.elapsedTime * 0.08;
       const targetRotY = scrollSpin + idleDrift + (userRotation?.x || 0) * 1.5;
 
@@ -237,7 +237,7 @@ export default function KryptosRing({
   });
 
   return (
-    <group ref={outerGroupRef} rotation={[0.34, 0, -0.16]} position={[0, 0, 0]} scale={1}>
+    <group ref={outerGroupRef} rotation={[0.32, 0, -0.15]} position={[0, 0, 0]} scale={1.55}>
       <group ref={innerSpinRef}>
         <primitive object={clonedScene} scale={0.01} />
       </group>
