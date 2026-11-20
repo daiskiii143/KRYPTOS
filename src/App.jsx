@@ -2,10 +2,9 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Lenis from 'lenis';
 import Scene from './components/3d/Scene';
 import Navigation from './components/Navigation';
-import HeroOverlay from './components/HeroOverlay';
-import ConfiguratorOverlay from './components/ConfiguratorOverlay';
-import CollectionSection from './components/CollectionSection';
+import Hero from './components/Hero';
 import AtelierSection from './components/AtelierSection';
+import CollectionSection from './components/CollectionSection';
 import InspectModal from './components/InspectModal';
 import VaultDrawer from './components/VaultDrawer';
 import Footer from './components/Footer';
@@ -15,9 +14,8 @@ export default function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeEdition, setActiveEdition] = useState('ignis');
   const [userRotation, setUserRotation] = useState({ x: 0, y: 0 });
-  const [ringRotation, setRingRotation] = useState([0, 0, 0]);
 
-  // Vault cart state
+  // Vault state
   const [vaultItems, setVaultItems] = useState([
     {
       ring: RING_EDITIONS[0],
@@ -32,6 +30,8 @@ export default function App() {
   const [inspectRing, setInspectRing] = useState(null);
 
   const lenisRef = useRef(null);
+  const isDragging = useRef(false);
+  const dragStart = useRef({ x: 0, y: 0 });
 
   // Initialize Lenis smooth scroll
   useEffect(() => {
@@ -59,8 +59,6 @@ export default function App() {
       requestAnimationFrame(raf);
     }
     const rafId = requestAnimationFrame(raf);
-
-    // Initial check
     handleScroll();
 
     return () => {
@@ -69,17 +67,41 @@ export default function App() {
     };
   }, []);
 
-  // Navigation anchor handler
+  // Smooth navigation handler
   const handleNavigate = useCallback((sectionId) => {
     if (lenisRef.current) {
-      const target = document.getElementById(sectionId);
-      if (target) {
-        lenisRef.current.scrollTo(target, { offset: -40, duration: 1.4 });
-      } else if (sectionId === 'hero') {
-        lenisRef.current.scrollTo(0, { duration: 1.4 });
+      if (sectionId === 'hero') {
+        lenisRef.current.scrollTo(0, { duration: 1.2 });
+      } else {
+        const target = document.getElementById(sectionId);
+        if (target) {
+          lenisRef.current.scrollTo(target, { offset: -60, duration: 1.2 });
+        }
       }
     }
   }, []);
+
+  // Left-Rail Drag Interaction to rotate ring 360°
+  const handlePointerDown = (e) => {
+    isDragging.current = true;
+    dragStart.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handlePointerMove = (e) => {
+    if (!isDragging.current) return;
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    dragStart.current = { x: e.clientX, y: e.clientY };
+
+    setUserRotation((prev) => ({
+      x: prev.x + dx * 0.008,
+      y: Math.max(-1.0, Math.min(1.0, prev.y + dy * 0.008))
+    }));
+  };
+
+  const handlePointerUp = () => {
+    isDragging.current = false;
+  };
 
   // Vault actions
   const handleAddToVault = (ring, size = 'US 10', engraving = '') => {
@@ -114,56 +136,68 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#050507] text-porcelain selection:bg-crimson selection:text-white overflow-x-hidden font-sans">
-      {/* Fixed Navigation Header */}
+    <div
+      className="relative min-h-screen bg-[#050507] text-porcelain selection:bg-crimson selection:text-white overflow-x-hidden font-sans"
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerUp}
+    >
+      {/* 1. Minimal Fixed Top Header */}
       <Navigation
         vaultCount={vaultItems.reduce((sum, item) => sum + item.quantity, 0)}
         onOpenVault={() => setIsVaultOpen(true)}
         onNavigate={handleNavigate}
       />
 
-      {/* Fixed 3D WebGL Canvas Layer */}
+      {/* 2. Persistent 3D WebGL Layer (Centered in Hero -> Left Rail Docked Dial) */}
       <Scene
         scrollProgress={scrollProgress}
         activeEdition={activeEdition}
         userRotation={userRotation}
-        ringRotation={ringRotation}
-        onRotationChange={setRingRotation}
       />
 
-      {/* Main Editorial Content (Scrollable) */}
-      <main className="relative z-20">
-        {/* Act 0 & Act 1: The Dark Reveal & Flying Runes */}
-        <HeroOverlay
+      {/* 3. Left Rail Interactive Touch Surface (Active when docked on desktop) */}
+      <div
+        onPointerDown={handlePointerDown}
+        className={`hidden lg:flex fixed left-0 top-0 bottom-0 w-[34%] z-20 flex-col justify-end p-10 select-none cursor-grab active:cursor-grabbing transition-opacity duration-500 ${
+          scrollProgress > 0.12 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-porcelain-dark flex items-center justify-between border-t border-white/[0.08] pt-4">
+          <span>Mechanical Scroll Dial</span>
+          <span>{Math.round(scrollProgress * 100)}%</span>
+        </div>
+      </div>
+
+      {/* 4. Natural Document Flow Content */}
+      <div className="relative z-20">
+        {/* Hero Section: Centered macro ring view + wordmark (0% – 12%) */}
+        <Hero
           scrollProgress={scrollProgress}
-          onUnlockClick={() => handleNavigate('configurator')}
+          onExploreClick={() => handleNavigate('atelier')}
         />
 
-        {/* Act 2: Interactive 3D Studio Configurator */}
-        <ConfiguratorOverlay
-          activeEdition={activeEdition}
-          onSelectEdition={setActiveEdition}
-          onOpenInspect={(ring) => setInspectRing(ring)}
-          onAddToVault={handleAddToVault}
-          userRotation={userRotation}
-          onRotationChange={setUserRotation}
-        />
+        {/* Right-Hand Content Column (ml-[34%] on desktop) */}
+        <main className="w-full lg:ml-[34%] lg:w-[66%] max-w-4xl px-6 sm:px-10 md:px-14">
+          {/* Section 01: Ejected Headline + Interactive Edition Switcher (Unboxed) */}
+          <AtelierSection
+            activeEdition={activeEdition}
+            onSelectEdition={setActiveEdition}
+            onAddToVault={handleAddToVault}
+          />
 
-        {/* Curated Collection Grid */}
-        <CollectionSection
-          activeEdition={activeEdition}
-          onSelectEdition={setActiveEdition}
-          onOpenInspect={(ring) => setInspectRing(ring)}
-        />
+          {/* Section 02: Curated Editions 2-Column Gallery */}
+          <CollectionSection
+            onOpenInspect={(ring) => setInspectRing(ring)}
+            onAddToVault={handleAddToVault}
+          />
 
-        {/* Metallurgy Anatomy Breakdown */}
-        <AtelierSection />
+          {/* Minimal Hallmarks Footer */}
+          <Footer onNavigate={handleNavigate} />
+        </main>
+      </div>
 
-        {/* Luxury Hallmarks Footer */}
-        <Footer onNavigate={handleNavigate} />
-      </main>
-
-      {/* Interactive Quick-Inspect Product Modal */}
+      {/* Sleek Sizing & Laser Engraving Modal */}
       <InspectModal
         ring={inspectRing}
         isOpen={Boolean(inspectRing)}
@@ -171,7 +205,7 @@ export default function App() {
         onAddToVault={handleAddToVault}
       />
 
-      {/* Slide-Out Vault Bag Drawer */}
+      {/* Minimal Slide-Out Vault Bag Drawer */}
       <VaultDrawer
         isOpen={isVaultOpen}
         onClose={() => setIsVaultOpen(false)}

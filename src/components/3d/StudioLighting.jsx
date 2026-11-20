@@ -1,24 +1,17 @@
 import React from 'react';
 import { Environment, Lightformer } from '@react-three/drei';
 
-export default function StudioLighting({ edition = 'ignis' }) {
-  // Accent color adapts subtly to active edition
-  const accentLight = edition === 'eclipse' 
-    ? '#71717A' 
-    : edition === 'aether' 
-    ? '#10B981' 
-    : '#FF1E38';
-
+export default function StudioLighting() {
   return (
     <>
-      {/* Studio ambient fill */}
-      <ambientLight intensity={0.4} color="#F5F5F7" />
+      {/* Soft neutral ambient fill */}
+      <ambientLight intensity={0.35} color="#F8FAFC" />
 
-      {/* Main Sharp Rim Key Light (Cool Silver highlight for tungsten chamfers) */}
+      {/* Main Sharp Studio Key Light (Cool Silver highlight) */}
       <directionalLight
-        position={[4, 6, 4]}
-        intensity={2.8}
-        color="#F8FAFC"
+        position={[3, 5, 4]}
+        intensity={2.4}
+        color="#FFFFFF"
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
@@ -27,60 +20,60 @@ export default function StudioLighting({ edition = 'ignis' }) {
         shadow-normalBias={0.03}
       />
 
-      {/* Fill Rim Light (Opposite side silhouette) */}
+      {/* Subtle fill on opposing rim */}
       <directionalLight
-        position={[-5, -2, 3]}
-        intensity={1.4}
+        position={[-4, -1, 3]}
+        intensity={1.0}
         color="#E2E8F0"
       />
 
-      {/* Dramatic Warm / Inlay Rim Accent Light */}
-      <spotLight
-        position={[2, -4, 2]}
-        intensity={2.2}
-        color={accentLight}
-        angle={0.6}
-        penumbra={0.8}
-      />
-
-      {/* Procedural High-End Studio Environment with Lightformers */}
+      {/* High-Precision Luxury Studio Environment */}
       <Environment resolution={256}>
-        {/* Overhead soft white linear strip for continuous glossy resin reflection */}
+        {/* Overhead soft white linear strip for continuous glossy clear resin reflection */}
         <Lightformer
           form="rect"
-          intensity={3.5}
+          intensity={2.8}
           color="#FFFFFF"
-          scale={[10, 1.2, 1]}
-          position={[0, 5, 2]}
+          scale={[12, 1.2, 1]}
+          position={[0, 4.5, 2]}
           rotation={[Math.PI / 4, 0, 0]}
         />
 
-        {/* Crisp cool-silver side reflection card */}
+        {/* 1. Left Narrow Cool-White Edge Reflector (Cuts razor-crisp 45° chamfer highlight) */}
         <Lightformer
           form="rect"
-          intensity={2.0}
+          intensity={3.6}
+          color="#F8FAFC"
+          scale={[0.4, 9, 1]}
+          position={[-3.6, 0, 1.2]}
+          rotation={[0, Math.PI / 4, 0]}
+        />
+
+        {/* 2. Right Narrow Cool-White Edge Reflector (Cuts opposing 45° chamfer highlight) */}
+        <Lightformer
+          form="rect"
+          intensity={3.6}
+          color="#F8FAFC"
+          scale={[0.4, 9, 1]}
+          position={[3.6, 0, 1.2]}
+          rotation={[0, -Math.PI / 4, 0]}
+        />
+
+        {/* Front-facing soft fill card */}
+        <Lightformer
+          form="rect"
+          intensity={1.0}
           color="#E2E8F0"
-          scale={[6, 2, 1]}
-          position={[5, 0, -2]}
-          rotation={[0, -Math.PI / 3, 0]}
+          scale={[6, 3, 1]}
+          position={[0, -2, 4]}
         />
 
-        {/* Warm crimson / edition-accent bottom rim reflector */}
-        <Lightformer
-          form="ring"
-          intensity={3.0}
-          color={accentLight}
-          scale={4}
-          position={[-3, -4, 2]}
-          rotation={[Math.PI / 3, 0, 0]}
-        />
-
-        {/* Dark studio negative fill to prevent washing out deep obsidian metal */}
+        {/* Dark studio negative fill to keep obsidian metal deep and scratch-contrast high */}
         <Lightformer
           form="rect"
-          intensity={0.2}
+          intensity={0.1}
           color="#050507"
-          scale={[15, 15, 1]}
+          scale={[20, 20, 1]}
           position={[0, 0, -8]}
         />
       </Environment>

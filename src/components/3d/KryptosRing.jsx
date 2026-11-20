@@ -9,14 +9,9 @@ useGLTF.setDecoderPath('/draco/');
 export default function KryptosRing({
   scrollProgress = 0,
   activeEdition = 'ignis',
-  isConfiguring = false,
-  userRotation = { x: 0, y: 0 },
-  customEngraving = '',
-  onRotationChange
+  userRotation = { x: 0, y: 0 }
 }) {
   const groupRef = useRef();
-  const lastScroll = useRef(0);
-  const scrollVelocity = useRef(0);
 
   // Load the GLTF model
   const { scene } = useGLTF('/models/kryptos-ring.glb');
@@ -29,7 +24,7 @@ export default function KryptosRing({
   ]);
 
   useMemo(() => {
-    [texCrimson, texEclipse, texAether].forEach(tex => {
+    [texCrimson, texEclipse, texAether].forEach((tex) => {
       if (tex) {
         tex.wrapS = THREE.RepeatWrapping;
         tex.wrapT = THREE.ClampToEdgeWrapping;
@@ -45,20 +40,19 @@ export default function KryptosRing({
   // Material references
   const materialsRef = useRef({});
 
-  // Initialize and isolate materials for runtime animation
+  // Initialize and isolate materials for realistic dark metal PBR
   useEffect(() => {
     clonedScene.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
 
-        // Clone material so instances don't cross-contaminate
         if (child.material) {
           child.material = child.material.clone();
           materialsRef.current[child.name] = child.material;
         }
 
-        // Identify parts
+        // Apply realistic jewelry PBR properties
         if (child.name.includes('ResinOvercoat')) {
           child.material.transmission = 0.98;
           child.material.roughness = 0.015;
@@ -67,17 +61,20 @@ export default function KryptosRing({
           child.material.depthWrite = false;
         } else if (child.name.includes('TungstenFrame')) {
           child.material.metalness = 1.0;
-          child.material.roughness = 0.06;
-          child.material.color.set('#07080A');
+          child.material.roughness = 0.04;
+          child.material.color.set('#060709');
         } else if (child.name.includes('FiligreeRelief')) {
           child.material.metalness = 1.0;
-          child.material.roughness = 0.08;
+          child.material.roughness = 0.09;
+          child.material.color.set('#D8D8DC');
+          child.material.emissive.set('#000000');
+          child.material.emissiveIntensity = 0.0;
         }
       }
     });
   }, [clonedScene]);
 
-  // Update materials when activeEdition changes
+  // Update materials when activeEdition changes (Strictly subtle, dark-luxury PBR)
   useEffect(() => {
     const coreMat = materialsRef.current['Ring_CrimsonCore'];
     const filigreeMat = materialsRef.current['Ring_FiligreeRelief'];
@@ -86,141 +83,122 @@ export default function KryptosRing({
     if (!coreMat || !filigreeMat) return;
 
     if (activeEdition === 'eclipse') {
-      // 02 / ECLIPSE OBSIDIAN
+      // 02 / ECLIPSE OBSIDIAN (Monochromatic stealth carbon)
       coreMat.map = texEclipse;
-      coreMat.color.set('#FFFFFF');
-      coreMat.emissive.set('#52525B');
-      coreMat.emissiveIntensity = 0.1;
-      coreMat.roughness = 0.30;
+      coreMat.color.set('#CCCCCC');
+      coreMat.emissive.set('#18181B');
+      coreMat.emissiveIntensity = 0.04;
+      coreMat.roughness = 0.32;
+      coreMat.metalness = 0.2;
       coreMat.needsUpdate = true;
 
-      filigreeMat.color.set('#71717A');
+      filigreeMat.color.set('#64646E');
       filigreeMat.roughness = 0.16;
-      filigreeMat.emissive.set('#3F3F46');
-      filigreeMat.emissiveIntensity = 0.05;
+      filigreeMat.metalness = 0.96;
+      filigreeMat.emissive.set('#000000');
+      filigreeMat.emissiveIntensity = 0.0;
 
-      if (frameMat) frameMat.color.set('#050507');
+      if (frameMat) frameMat.color.set('#040405');
     } else if (activeEdition === 'aether') {
-      // 03 / AETHER EMERALD
+      // 03 / AETHER EMERALD (Deep imperial emerald relic)
       coreMat.map = texAether;
       coreMat.color.set('#FFFFFF');
-      coreMat.emissive.set('#059669');
-      coreMat.emissiveIntensity = 0.25;
-      coreMat.roughness = 0.22;
+      coreMat.emissive.set('#064E3B');
+      coreMat.emissiveIntensity = 0.08;
+      coreMat.roughness = 0.20;
+      coreMat.metalness = 0.4;
       coreMat.needsUpdate = true;
 
       filigreeMat.color.set('#E4E4E7');
-      filigreeMat.roughness = 0.10;
-      filigreeMat.emissive.set('#10B981');
-      filigreeMat.emissiveIntensity = 0.15;
+      filigreeMat.roughness = 0.09;
+      filigreeMat.metalness = 1.0;
+      filigreeMat.emissive.set('#000000');
+      filigreeMat.emissiveIntensity = 0.0;
 
-      if (frameMat) frameMat.color.set('#090A0D');
+      if (frameMat) frameMat.color.set('#06070A');
     } else {
-      // 01 / IGNIS TUNGSTEN (Default signature)
+      // 01 / IGNIS TUNGSTEN (Signature deep blood-crimson pearloid)
       coreMat.map = texCrimson;
       coreMat.color.set('#FFFFFF');
-      coreMat.emissive.set('#FF1E38');
-      coreMat.emissiveIntensity = 0.25;
-      coreMat.roughness = 0.20;
+      coreMat.emissive.set('#8B0015'); // Deep ruby blood, zero neon
+      coreMat.emissiveIntensity = 0.08;
+      coreMat.roughness = 0.18;
+      coreMat.metalness = 0.4;
       coreMat.needsUpdate = true;
 
-      filigreeMat.color.set('#D4D4D8');
-      filigreeMat.roughness = 0.08;
-      filigreeMat.emissive.set('#FF1E38');
-      filigreeMat.emissiveIntensity = 0.20;
+      filigreeMat.color.set('#D8D8DC'); // Crisp brushed rhodium silver
+      filigreeMat.roughness = 0.09;
+      filigreeMat.metalness = 1.0;
+      filigreeMat.emissive.set('#000000');
+      filigreeMat.emissiveIntensity = 0.0;
 
-      if (frameMat) frameMat.color.set('#07080A');
+      if (frameMat) frameMat.color.set('#060709');
     }
   }, [activeEdition, texCrimson, texEclipse, texAether]);
 
-  // Frame update: scroll rotation, velocity-based texture ignition, user drag
-  useFrame((state, delta) => {
+  // Frame update: Left-Rail Docking & Precision Scroll Dial Rotation
+  useFrame((state) => {
     if (!groupRef.current) return;
 
-    // Calculate scroll velocity
-    const currentScroll = scrollProgress;
-    const diff = (currentScroll - lastScroll.current) / Math.max(delta, 0.001);
-    lastScroll.current = currentScroll;
-    scrollVelocity.current = THREE.MathUtils.lerp(scrollVelocity.current, Math.abs(diff), 0.1);
+    // Detect responsive viewport width
+    const isMobile = window.innerWidth < 1024;
 
-    const speed = scrollVelocity.current;
+    if (scrollProgress <= 0.12) {
+      // -------------------------------------------------------------------
+      // HERO PHASE (scroll = 0% – 12%): Centered Macro View of the Ring
+      // -------------------------------------------------------------------
+      const targetScale = isMobile ? 0.85 : 1.08;
+      const targetX = 0;
+      const targetY = isMobile ? -0.1 : 0;
+      const targetZ = 0;
 
-    // 1. Texture Ignition Shader Effect: Emissive pulse driven by scroll speed + traveling wave
-    const filigreeMat = materialsRef.current['Ring_FiligreeRelief'];
-    const coreMat = materialsRef.current['Ring_CrimsonCore'];
-
-    if (filigreeMat && coreMat) {
-      const timeWave = Math.sin(state.clock.elapsedTime * 6.0 + groupRef.current.rotation.y * 3.0) * 0.5 + 0.5;
-      // Surge emissive power during fast spin
-      const ignitionStrength = Math.min(speed * 3.5 + timeWave * 0.6, 4.5);
-
-      if (activeEdition === 'ignis') {
-        filigreeMat.emissiveIntensity = 0.2 + ignitionStrength * 1.2;
-        coreMat.emissiveIntensity = 0.25 + ignitionStrength * 0.9;
-      } else if (activeEdition === 'aether') {
-        filigreeMat.emissiveIntensity = 0.15 + ignitionStrength * 1.0;
-        coreMat.emissiveIntensity = 0.2 + ignitionStrength * 0.8;
-      } else {
-        filigreeMat.emissiveIntensity = 0.05 + ignitionStrength * 0.5;
-        coreMat.emissiveIntensity = 0.1 + ignitionStrength * 0.4;
-      }
-    }
-
-    // 2. Transform & Orbital Spin
-    if (scrollProgress < 0.38) {
-      // Act 0 & Act 1: Dramatic opening reveal & spin acceleration
-      // Smooth reveal entrance at scroll = 0
-      const introProgress = Math.min(state.clock.elapsedTime / 1.2, 1.0);
-      const easeIntro = 1 - Math.pow(1 - introProgress, 3);
-
-      // Orbital spin accelerates with scroll
-      const spinAngle = scrollProgress * Math.PI * 14.0;
-      const targetRotY = spinAngle + state.clock.elapsedTime * 0.15;
-      const targetRotX = THREE.MathUtils.lerp(-0.95, -0.65, scrollProgress * 2.5);
-      const targetRotZ = THREE.MathUtils.lerp(-0.45, 0.25, scrollProgress * 2.5);
-
-      groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotX, 0.1);
-      groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, 0.15);
-      groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetRotZ, 0.1);
-
-      // Ring scale: start slightly smaller in dark and expand into hero presence
-      const targetScale = easeIntro * 1.15;
+      groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetX, 0.1);
+      groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, 0.1);
+      groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 0.1);
       groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.1));
 
-      // Floating gentle bobbing
-      const bob = Math.sin(state.clock.elapsedTime * 1.5) * 0.04;
-      groupRef.current.position.set(0, bob, 0);
-
-      if (onRotationChange) {
-        onRotationChange([groupRef.current.rotation.x, groupRef.current.rotation.y, groupRef.current.rotation.z]);
-      }
-    } else {
-      // Act 2: Atelier Studio Mode & Interactive 3D Configurator
-      // Position shifts slightly right/center for editorial side-by-side
-      const studioProgress = THREE.MathUtils.clamp((scrollProgress - 0.38) / 0.2, 0, 1);
-      
-      const targetPosX = THREE.MathUtils.lerp(0, 0.65, studioProgress);
-      const targetPosY = THREE.MathUtils.lerp(0, 0.05, studioProgress);
-      const targetPosZ = THREE.MathUtils.lerp(0, 0.2, studioProgress);
-
-      groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetPosX, 0.08);
-      groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetPosY, 0.08);
-      groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetPosZ, 0.08);
-
-      // Allow interactive drag rotation or gentle luxury turntable idle
-      const idleSpin = state.clock.elapsedTime * 0.2;
+      // Gentle luxury turntable idle + user rotation
+      const idleSpin = state.clock.elapsedTime * 0.15;
       const targetRotX = -0.75 + (userRotation?.y || 0) * 0.8;
       const targetRotY = idleSpin + (userRotation?.x || 0) * 1.5;
+      const targetRotZ = -0.32;
 
       groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotX, 0.1);
       groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, 0.1);
-      groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, -0.3, 0.1);
+      groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetRotZ, 0.1);
+    } else {
+      // -------------------------------------------------------------------
+      // LEFT-RAIL SCROLL DIAL PHASE (scroll > 12%):
+      // Smoothly docks to Left Rail (X = -2.15, Y = 0) and scales to 0.46
+      // Continuously rotates mapped 1:1 to document scroll progress
+      // -------------------------------------------------------------------
+      const dockProgress = THREE.MathUtils.clamp((scrollProgress - 0.12) / 0.10, 0, 1);
+      const easeDock = 1 - Math.pow(1 - dockProgress, 3);
 
-      groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, 1.1, 0.08));
+      const dockedX = isMobile ? 0 : -2.15;
+      const dockedY = isMobile ? 1.4 : 0;
+      const dockedScale = isMobile ? 0.38 : 0.46;
 
-      if (onRotationChange) {
-        onRotationChange([groupRef.current.rotation.x, groupRef.current.rotation.y, groupRef.current.rotation.z]);
-      }
+      const targetX = THREE.MathUtils.lerp(0, dockedX, easeDock);
+      const targetY = THREE.MathUtils.lerp(0, dockedY, easeDock);
+      const targetZ = THREE.MathUtils.lerp(0, 0.25, easeDock);
+      const targetScale = THREE.MathUtils.lerp(1.08, dockedScale, easeDock);
+
+      groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetX, 0.1);
+      groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, 0.1);
+      groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 0.1);
+      groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.1));
+
+      // Precision scroll dial rotation: maps continuous 360° rotation across the scroll range
+      // plus user manual drag adjustment
+      const dialSpin = ((scrollProgress - 0.12) / 0.88) * Math.PI * 4.0;
+      const targetRotX = -0.65 + (userRotation?.y || 0) * 0.8;
+      const targetRotY = dialSpin + (userRotation?.x || 0) * 1.5;
+      const targetRotZ = -0.22;
+
+      groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotX, 0.12);
+      groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, 0.15);
+      groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetRotZ, 0.12);
     }
   });
 
@@ -228,7 +206,7 @@ export default function KryptosRing({
     <primitive
       ref={groupRef}
       object={clonedScene}
-      scale={0.01} // Initialized small for dark reveal intro
+      scale={0.01}
       position={[0, 0, 0]}
     />
   );

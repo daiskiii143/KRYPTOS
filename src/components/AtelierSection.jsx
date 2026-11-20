@@ -1,101 +1,168 @@
-import React from 'react';
-import { Shield, Sparkles, Eye, Compass, Layers, Gem } from 'lucide-react';
-import { CRAFTSMANSHIP_LAYERS } from '../data/rings';
+import React, { useState } from 'react';
+import { RING_EDITIONS } from '../data/rings';
 
-export default function AtelierSection() {
-  const iconMap = [
-    <Shield className="w-5 h-5 text-porcelain" />,
-    <Sparkles className="w-5 h-5 text-crimson" />,
-    <Layers className="w-5 h-5 text-rhodium-light" />,
-    <Gem className="w-5 h-5 text-cyan-400" />
-  ];
+export default function AtelierSection({
+  activeEdition = 'ignis',
+  onSelectEdition,
+  onAddToVault
+}) {
+  const current = RING_EDITIONS.find((r) => r.id === activeEdition) || RING_EDITIONS[0];
+  const [selectedSize, setSelectedSize] = useState('10');
+  const [engraving, setEngraving] = useState('');
+  const [showEngraving, setShowEngraving] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleAdd = () => {
+    onAddToVault(current, `US ${selectedSize}`, engraving);
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 1200);
+  };
 
   return (
-    <section id="craftsmanship" className="relative py-28 px-6 md:px-12 max-w-7xl mx-auto w-full">
-      {/* Section Header */}
-      <div className="max-w-2xl mb-16">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono tracking-widest uppercase bg-white/[0.04] border border-white/10 text-porcelain-muted mb-4">
-          <Compass className="w-3 h-3 text-crimson" />
-          <span>Subterranean Metallurgy</span>
-        </div>
-        <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-porcelain">
-          THE FOUR ANATOMIES
+    <section id="atelier" className="py-24 border-b border-white/[0.06]">
+      {/* Ejected Editorial Headline & Manifesto */}
+      <div className="mb-24">
+        <span className="font-mono text-xs uppercase tracking-[0.28em] text-porcelain-muted block mb-4">
+          Subterranean Metallurgy
+        </span>
+        <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-porcelain leading-[1.15]">
+          Forged in obsidian.
+          <br />
+          Sealed in crimson.
         </h2>
-        <p className="mt-4 text-sm sm:text-base font-sans text-porcelain-muted font-light leading-relaxed">
-          Engineered to outlive generations. We combine high-pressure sintered tungsten carbide with
-          a physically raised 0.018m Celtic filigree sculpture, hermetically sealed under diamond-polished
-          optical resin.
+        <p className="mt-6 font-sans text-sm sm:text-base font-light text-porcelain-muted leading-relaxed max-w-xl">
+          Aerospace-grade tungsten carbide sintered at 1,500°C. Sunk beneath an optical crystal dome,
+          a hand-stratified pearloid matrix meets physically raised Celtic dragon filigree.
         </p>
+        <div className="mt-8 pt-6 border-t border-white/[0.06] flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-porcelain-dark">
+          <span>Mohs 9.0 Hardness</span>
+          <span>·</span>
+          <span>14.2g Solid Weight</span>
+          <span>·</span>
+          <span>Comfort-Fit Radial Bore</span>
+          <span>·</span>
+          <span>1.54 IOR Optical Seal</span>
+        </div>
       </div>
 
-      {/* 4 Architecture Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {CRAFTSMANSHIP_LAYERS.map((layer, index) => (
-          <div
-            key={layer.step}
-            className="group p-6 rounded-2xl glass-panel border border-white/[0.08] hover:border-white/20 hover:bg-white/[0.03] transition-all duration-300 flex flex-col justify-between"
-          >
-            <div>
-              {/* Step & Icon */}
-              <div className="flex items-center justify-between mb-6">
-                <span className="font-mono text-2xl font-bold text-white/20 group-hover:text-crimson transition-colors">
-                  {layer.step}
-                </span>
-                <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  {iconMap[index]}
-                </div>
-              </div>
+      {/* Section 01: Interactive Edition Switcher (Unboxed) */}
+      <div className="space-y-10">
+        {/* Title & Price */}
+        <div>
+          <span className="font-mono text-xs uppercase tracking-[0.25em] text-porcelain-dark block mb-2">
+            Edition {current.editionNumber}
+          </span>
+          <h3 className="font-display text-2xl sm:text-3xl font-normal text-porcelain tracking-wide">
+            {current.name} — ${current.price}
+          </h3>
+          <p className="mt-3 font-sans text-sm font-light text-porcelain-muted max-w-lg leading-relaxed">
+            {current.description}
+          </p>
+        </div>
 
-              {/* Title & Specs */}
-              <h3 className="font-display text-lg font-bold text-porcelain group-hover:text-white transition-colors">
-                {layer.title}
-              </h3>
-              <p className="mt-1 text-xs font-mono text-crimson-vivid font-medium tracking-wide">
-                {layer.specs}
-              </p>
-
-              {/* Detailed Description */}
-              <p className="mt-4 text-xs font-sans text-porcelain-muted font-light leading-relaxed">
-                {layer.description}
-              </p>
-            </div>
-
-            {/* Bottom Hallmarks */}
-            <div className="mt-6 pt-4 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-porcelain-dark uppercase">
-              <span>Spec Grade A</span>
-              <span>100% Scratchproof</span>
-            </div>
+        {/* 3 Minimalist Underline Finish Tabs */}
+        <div>
+          <label className="font-mono text-[11px] uppercase tracking-[0.2em] text-porcelain-dark block mb-3">
+            Finish & Matrix
+          </label>
+          <div className="flex items-center gap-8 border-b border-white/[0.08] pb-1">
+            {RING_EDITIONS.map((edition) => {
+              const isSelected = activeEdition === edition.id;
+              return (
+                <button
+                  key={edition.id}
+                  onClick={() => onSelectEdition(edition.id)}
+                  className={`pb-3 font-mono text-xs uppercase tracking-[0.18em] transition-all relative ${
+                    isSelected
+                      ? 'text-porcelain font-medium'
+                      : 'text-porcelain-muted hover:text-porcelain'
+                  }`}
+                >
+                  {edition.finishTab}
+                  {isSelected && (
+                    <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-porcelain animate-fade-in" />
+                  )}
+                </button>
+              );
+            })}
           </div>
-        ))}
-      </div>
-
-      {/* Atelier Craftsmanship Manifesto Bar */}
-      <div className="mt-16 p-8 rounded-2xl glass-subtle border border-white/[0.08] grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-        <div>
-          <span className="font-mono text-xs text-crimson uppercase tracking-widest block mb-1">
-            01 / Diamond Chamfer
-          </span>
-          <p className="text-xs font-sans text-porcelain-muted">
-            Twin 45-degree angled light-reflecting outer facets catch directional studio light from any angle.
-          </p>
         </div>
 
+        {/* Clean Size Row (6 to 12) */}
         <div>
-          <span className="font-mono text-xs text-crimson uppercase tracking-widest block mb-1">
-            02 / Optical Refraction
-          </span>
-          <p className="text-xs font-sans text-porcelain-muted">
-            High-index 1.54 IOR clear resin amplifies the depth perception of the raised silver filigree.
-          </p>
+          <div className="flex items-center justify-between mb-3">
+            <label className="font-mono text-[11px] uppercase tracking-[0.2em] text-porcelain-dark">
+              Size (Comfort-Fit Profile)
+            </label>
+            <span className="font-mono text-xs text-porcelain">US {selectedSize}</span>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-3">
+            {['6', '7', '8', '9', '10', '11', '12'].map((size) => {
+              const isSelected = selectedSize === size;
+              return (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center font-mono text-xs transition-all ${
+                    isSelected
+                      ? 'bg-porcelain text-[#050507] font-medium'
+                      : 'border border-white/10 text-porcelain-muted hover:text-porcelain hover:border-white/30'
+                  }`}
+                >
+                  {size}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
+        {/* Optional Custom Engraving Field */}
         <div>
-          <span className="font-mono text-xs text-crimson uppercase tracking-widest block mb-1">
-            03 / Radial Comfort Bore
-          </span>
-          <p className="text-xs font-sans text-porcelain-muted">
-            Curved inner wall minimizes skin contact friction while carrying micro-laser Hallmarked typography.
-          </p>
+          {!showEngraving ? (
+            <button
+              onClick={() => setShowEngraving(true)}
+              className="font-mono text-xs text-porcelain-muted hover:text-porcelain transition-colors underline underline-offset-4"
+            >
+              + Add complimentary inner-band laser inscription
+            </button>
+          ) : (
+            <div className="space-y-2 max-w-md animate-fade-in">
+              <div className="flex items-center justify-between">
+                <label className="font-mono text-[11px] uppercase tracking-[0.2em] text-porcelain-dark">
+                  Laser Inscription (Inner Comfort Bore)
+                </label>
+                <button
+                  onClick={() => setShowEngraving(false)}
+                  className="font-mono text-[10px] text-porcelain-dark hover:text-porcelain"
+                >
+                  Remove
+                </button>
+              </div>
+              <input
+                type="text"
+                maxLength={28}
+                value={engraving}
+                onChange={(e) => setEngraving(e.target.value.toUpperCase())}
+                placeholder="e.g. KRYPTOS · TUNGSTEN"
+                className="w-full px-3 py-2.5 bg-transparent border border-white/15 text-porcelain font-mono text-xs focus:outline-none focus:border-white transition-colors uppercase placeholder:text-white/20"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Single Crisp Porcelain-White Add to Vault Button */}
+        <div className="pt-2">
+          <button
+            onClick={handleAdd}
+            disabled={isAdded}
+            className={`w-full sm:w-auto px-10 py-4 font-mono text-xs uppercase tracking-[0.25em] font-medium transition-all ${
+              isAdded
+                ? 'bg-emerald-600 text-white'
+                : 'bg-porcelain text-[#050507] hover:bg-white'
+            }`}
+          >
+            {isAdded ? 'Added to Vault' : `Add to Vault · $${current.price}`}
+          </button>
         </div>
       </div>
     </section>
