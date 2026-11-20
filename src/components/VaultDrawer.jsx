@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Trash2, Plus, Minus, CheckCircle2 } from 'lucide-react';
+import { X, Trash2, Plus, Minus, CheckCircle2, Shield } from 'lucide-react';
 
 export default function VaultDrawer({
   isOpen,
@@ -32,7 +32,7 @@ export default function VaultDrawer({
     <div className="fixed inset-0 z-50 flex justify-end animate-fade-in">
       {/* Dim backdrop */}
       <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity"
         onClick={onClose}
       />
 
@@ -75,7 +75,7 @@ export default function VaultDrawer({
               <CheckCircle2 className="w-6 h-6 text-porcelain" />
             </div>
             <div>
-              <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-porcelain-muted block mb-1">
+              <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-crimson block mb-1">
                 Order Protocol #KP-902482
               </span>
               <h4 className="font-display text-2xl font-normal text-porcelain tracking-wide">
@@ -83,7 +83,7 @@ export default function VaultDrawer({
               </h4>
               <p className="font-sans text-xs font-light text-porcelain-muted mt-2 leading-relaxed">
                 Your piece has been queued for diamond chamfering and comfort-fit engraving.
-                Courier dispatch within 48 hours.
+                Courier dispatch within 24–48 hours.
               </p>
             </div>
 
@@ -94,121 +94,145 @@ export default function VaultDrawer({
               </div>
               <div className="flex justify-between text-[11px]">
                 <span>Shipping:</span>
-                <span className="text-porcelain">Complimentary Courier</span>
+                <span className="text-porcelain">Complimentary Armored Courier</span>
               </div>
               <div className="flex justify-between text-[11px]">
                 <span>Warranty:</span>
-                <span className="text-porcelain">Lifetime Armor Guarantee</span>
+                <span className="text-porcelain">Lifetime Atelier Guarantee</span>
               </div>
             </div>
 
             <button
               onClick={handleFinish}
-              className="w-full py-4 bg-porcelain text-[#050507] hover:bg-white font-mono text-xs uppercase tracking-[0.25em] font-medium transition-all"
+              className="w-full py-4 bg-porcelain text-[#050507] hover:bg-white font-mono text-xs uppercase tracking-[0.25em] font-medium transition-colors"
             >
-              Return to Atelier
-            </button>
-          </div>
-        ) : items.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-4">
-            <p className="font-display text-lg text-porcelain font-normal">Vault is Empty</p>
-            <p className="font-sans text-xs font-light text-porcelain-muted max-w-xs leading-relaxed">
-              Explore the atelier to configure and allocate your bespoke tungsten piece.
-            </p>
-            <button
-              onClick={onClose}
-              className="mt-2 font-mono text-xs uppercase tracking-[0.2em] text-porcelain underline underline-offset-8 hover:text-white"
-            >
-              Explore Collection
+              Conclude Transaction
             </button>
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
-            {items.map((item, idx) => (
-              <div
-                key={`${item.ring.id}-${item.size}-${idx}`}
-                className="pb-6 border-b border-white/[0.06] flex flex-col gap-3 group"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-porcelain-dark">
-                      Edition {item.ring.editionNumber}
-                    </span>
-                    <h4 className="font-display text-base font-normal text-porcelain">
-                      {item.ring.name}
-                    </h4>
-                    <div className="flex items-center gap-2 mt-1 font-mono text-xs text-porcelain-muted">
-                      <span>Size: {item.size}</span>
-                      <span>·</span>
-                      <span>${item.ring.price}</span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => onRemoveItem(idx)}
-                    className="p-1 text-white/30 hover:text-white transition-colors"
-                    aria-label="Remove item"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                {item.engraving && (
-                  <div className="font-mono text-[11px] text-porcelain-dark">
-                    Inscription: <span className="text-porcelain">"{item.engraving}"</span>
-                  </div>
-                )}
-
-                {/* Quantity Controls & Item Total */}
-                <div className="flex items-center justify-between pt-1">
-                  <div className="flex items-center gap-2 border border-white/10 p-1">
-                    <button
-                      onClick={() => onUpdateQuantity(idx, Math.max(1, item.quantity - 1))}
-                      className="w-5 h-5 flex items-center justify-center text-porcelain-muted hover:text-white"
-                    >
-                      <Minus className="w-3 h-3" />
-                    </button>
-                    <span className="font-mono text-xs px-2 text-porcelain">{item.quantity}</span>
-                    <button
-                      onClick={() => onUpdateQuantity(idx, item.quantity + 1)}
-                      className="w-5 h-5 flex items-center justify-center text-porcelain-muted hover:text-white"
-                    >
-                      <Plus className="w-3 h-3" />
-                    </button>
-                  </div>
-
-                  <span className="font-mono text-xs text-porcelain font-medium">
-                    ${item.ring.price * item.quantity}
+          <>
+            {/* Cart Items List */}
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 divide-y divide-white/[0.06]">
+              {items.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center space-y-3 py-16 text-porcelain-dark">
+                  <Shield className="w-8 h-8 stroke-1 text-white/20" />
+                  <p className="font-mono text-xs uppercase tracking-[0.2em]">
+                    Vault is currently empty
+                  </p>
+                  <span className="font-sans text-xs text-porcelain-muted font-light">
+                    Select a formation from the atelier or permanent collection.
                   </span>
                 </div>
+              ) : (
+                items.map((item, idx) => (
+                  <div key={`${item.ring.id}-${idx}`} className="pt-6 first:pt-0 space-y-3">
+                    <div className="flex gap-4">
+                      {/* Product Thumbnail with Generated Image */}
+                      <div className="w-20 h-20 bg-[#040405] border border-white/10 flex-shrink-0 overflow-hidden">
+                        <img
+                          src={item.ring.image}
+                          alt={item.ring.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-porcelain-dark block">
+                              EDITION {item.ring.editionNumber}
+                            </span>
+                            <h4 className="font-display text-base font-normal text-porcelain truncate">
+                              {item.ring.name}
+                            </h4>
+                          </div>
+                          <span className="font-mono text-xs text-porcelain font-medium">
+                            ${item.ring.price * item.quantity}
+                          </span>
+                        </div>
+
+                        <div className="font-mono text-[11px] text-porcelain-muted mt-1">
+                          Size: {item.size}
+                        </div>
+
+                        {item.engraving && (
+                          <div className="font-mono text-[10px] text-crimson tracking-wider truncate mt-0.5">
+                            Laser: "{item.engraving}"
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Quantity & Delete Controls */}
+                    <div className="flex items-center justify-between font-mono text-xs pt-1">
+                      <div className="flex items-center border border-white/15">
+                        <button
+                          onClick={() => {
+                            if (item.quantity > 1) {
+                              onUpdateQuantity(idx, item.quantity - 1);
+                            } else {
+                              onRemoveItem(idx);
+                            }
+                          }}
+                          className="p-1.5 text-porcelain-muted hover:text-white hover:bg-white/10 transition-colors"
+                        >
+                          <Minus className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="px-3 text-porcelain">{item.quantity}</span>
+                        <button
+                          onClick={() => onUpdateQuantity(idx, item.quantity + 1)}
+                          className="p-1.5 text-porcelain-muted hover:text-white hover:bg-white/10 transition-colors"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => onRemoveItem(idx)}
+                        className="p-1.5 text-porcelain-dark hover:text-red-400 transition-colors"
+                        aria-label="Remove item"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Footer Summary & Checkout */}
+            {items.length > 0 && (
+              <div className="p-6 md:p-8 border-t border-white/[0.08] bg-[#050507] space-y-4">
+                <div className="space-y-1.5 font-mono text-xs">
+                  <div className="flex justify-between text-porcelain-muted">
+                    <span>Subtotal:</span>
+                    <span className="text-porcelain">${subtotal} USD</span>
+                  </div>
+                  <div className="flex justify-between text-porcelain-muted text-[11px]">
+                    <span>Insured Armored Courier:</span>
+                    <span className="text-porcelain">Complimentary</span>
+                  </div>
+                  <div className="flex justify-between text-porcelain-muted text-[11px]">
+                    <span>Atelier Lifetime Seal:</span>
+                    <span className="text-porcelain">Included</span>
+                  </div>
+                </div>
+
+                <div className="border-t border-white/[0.08] pt-3 flex justify-between font-mono text-sm text-porcelain">
+                  <span className="uppercase tracking-wider">Total</span>
+                  <span className="font-medium">${subtotal} USD</span>
+                </div>
+
+                <button
+                  onClick={handleSimulateCheckout}
+                  className="w-full py-4 bg-porcelain text-[#050507] hover:bg-white font-mono text-xs uppercase tracking-[0.25em] font-medium transition-all"
+                >
+                  Confirm Vault Allocation
+                </button>
               </div>
-            ))}
-          </div>
-        )}
-
-        {/* Drawer Footer & Checkout CTA */}
-        {checkoutStep === 'cart' && items.length > 0 && (
-          <div className="p-6 md:p-8 border-t border-white/[0.08] bg-[#050507] space-y-4">
-            <div className="flex justify-between font-mono text-xs text-porcelain-muted">
-              <span>Subtotal:</span>
-              <span className="text-porcelain font-medium">${subtotal} USD</span>
-            </div>
-            <div className="flex justify-between font-mono text-[11px] text-porcelain-dark">
-              <span>Insured Courier:</span>
-              <span className="text-porcelain uppercase">Complimentary</span>
-            </div>
-
-            <button
-              onClick={handleSimulateCheckout}
-              className="w-full py-4 bg-porcelain text-[#050507] hover:bg-white font-mono text-xs uppercase tracking-[0.25em] font-medium transition-all"
-            >
-              Initiate Allocation · ${subtotal}
-            </button>
-
-            <div className="text-center font-mono text-[10px] text-porcelain-dark uppercase tracking-[0.15em]">
-              Complimentary Resizing · Lifetime Metallurgy Guarantee
-            </div>
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>

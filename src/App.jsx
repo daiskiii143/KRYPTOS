@@ -5,6 +5,8 @@ import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import AtelierSection from './components/AtelierSection';
 import CollectionSection from './components/CollectionSection';
+import SizingSection from './components/SizingSection';
+import ContactSection from './components/ContactSection';
 import InspectModal from './components/InspectModal';
 import VaultDrawer from './components/VaultDrawer';
 import Footer from './components/Footer';
@@ -12,7 +14,7 @@ import { RING_EDITIONS } from './data/rings';
 
 export default function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [activeEdition, setActiveEdition] = useState('ignis');
+  const [activeEdition, setActiveEdition] = useState('sovereign');
   const [userRotation, setUserRotation] = useState({ x: 0, y: 0 });
 
   // Vault state
@@ -75,13 +77,13 @@ export default function App() {
       } else {
         const target = document.getElementById(sectionId);
         if (target) {
-          lenisRef.current.scrollTo(target, { offset: -60, duration: 1.2 });
+          lenisRef.current.scrollTo(target, { offset: -70, duration: 1.2 });
         }
       }
     }
   }, []);
 
-  // Left-Rail Drag Interaction to rotate ring 360°
+  // Left-Rail Drag Interaction to rotate ring 360° on its spin axis
   const handlePointerDown = (e) => {
     isDragging.current = true;
     dragStart.current = { x: e.clientX, y: e.clientY };
@@ -171,7 +173,7 @@ export default function App() {
 
       {/* 4. Natural Document Flow Content */}
       <div className="relative z-20">
-        {/* Hero Section: Centered macro ring view + wordmark (0% – 12%) */}
+        {/* Hero Section: Centered macro ring view + wordmark (0% – 18%) */}
         <Hero
           scrollProgress={scrollProgress}
           onExploreClick={() => handleNavigate('atelier')}
@@ -184,13 +186,20 @@ export default function App() {
             activeEdition={activeEdition}
             onSelectEdition={setActiveEdition}
             onAddToVault={handleAddToVault}
+            onOpenSizing={() => handleNavigate('sizing')}
           />
 
-          {/* Section 02: Curated Editions 2-Column Gallery */}
+          {/* Section 02: Full 6-Ring Curated Editions Gallery */}
           <CollectionSection
             onOpenInspect={(ring) => setInspectRing(ring)}
             onAddToVault={handleAddToVault}
           />
+
+          {/* Section 03: Sizing Protocol & Interactive Caliber Matcher */}
+          <SizingSection />
+
+          {/* Section 04: Bespoke Commission Form & Direct Atelier Concierge */}
+          <ContactSection />
 
           {/* Minimal Hallmarks Footer */}
           <Footer onNavigate={handleNavigate} />
@@ -203,6 +212,10 @@ export default function App() {
         isOpen={Boolean(inspectRing)}
         onClose={() => setInspectRing(null)}
         onAddToVault={handleAddToVault}
+        onOpenSizing={() => {
+          setInspectRing(null);
+          handleNavigate('sizing');
+        }}
       />
 
       {/* Minimal Slide-Out Vault Bag Drawer */}
