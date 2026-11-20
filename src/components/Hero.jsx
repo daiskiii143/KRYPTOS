@@ -1,13 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { RING_EDITIONS } from '../data/rings';
 
 const FEATURED_HERO_RINGS = [
   {
     id: 'sovereign',
     name: 'The Sovereign',
     price: '$480',
-    subtitle: 'Crimson Pearloid & Filigree',
+    subtitle: 'Men · Crimson Filigree',
     image: '/images/rings/sovereign.png',
     accentColor: '#DC2626',
     glowClass: 'shadow-[0_0_25px_rgba(220,38,38,0.25)]'
@@ -16,19 +17,28 @@ const FEATURED_HERO_RINGS = [
     id: 'eclipse',
     name: 'The Eclipse',
     price: '$440',
-    subtitle: 'Faceted Obsidian Armor',
+    subtitle: 'Men · Faceted Obsidian',
     image: '/images/rings/eclipse.png',
     accentColor: '#94A3B8',
     glowClass: 'shadow-[0_0_25px_rgba(148,163,184,0.25)]'
   },
   {
-    id: 'aether',
-    name: 'The Aether Relic',
-    price: '$520',
-    subtitle: 'Carved Claw & Emerald Core',
-    image: '/images/rings/aether.png',
-    accentColor: '#10B981',
-    glowClass: 'shadow-[0_0_25px_rgba(16,185,129,0.25)]'
+    id: 'chronos',
+    name: 'The Chronos',
+    price: '$540',
+    subtitle: 'Men · Octagonal Signet',
+    image: '/images/rings/chronos.png',
+    accentColor: '#38BDF8',
+    glowClass: 'shadow-[0_0_25px_rgba(56,189,248,0.25)]'
+  },
+  {
+    id: 'nyx-thorn',
+    name: 'The Nyx Thorn',
+    price: '$470',
+    subtitle: "Women · Briar & Garnet",
+    image: '/images/rings/nyx-thorn.png',
+    accentColor: '#F43F5E',
+    glowClass: 'shadow-[0_0_25px_rgba(244,63,94,0.25)]'
   }
 ];
 
@@ -42,7 +52,11 @@ export default function Hero({
   const fadeOutProgress = Math.min(Math.max((scrollProgress - 0.12) / 0.08, 0), 1);
   const heroOpacity = Math.max(0, 1 - fadeOutProgress);
 
-  const activeRing = FEATURED_HERO_RINGS.find((r) => r.id === activeEdition) || FEATURED_HERO_RINGS[0];
+  const activeRing =
+    RING_EDITIONS.find((r) => r.id === activeEdition || r.modelEdition === activeEdition) ||
+    RING_EDITIONS[0];
+
+  const watermarkText = activeRing.name ? activeRing.name.replace('The ', '').toUpperCase() : 'KRYPTOS';
 
   return (
     <section
@@ -64,7 +78,7 @@ export default function Hero({
             transition={{ duration: 0.8 }}
             className="font-display font-bold text-[18vw] leading-none tracking-tighter text-white/[0.03] select-none uppercase whitespace-nowrap"
           >
-            {activeRing.id === 'sovereign' ? 'SOVEREIGN' : activeRing.id === 'eclipse' ? 'ECLIPSE' : 'KRYPTOS'}
+            {watermarkText}
           </motion.div>
         </div>
 
@@ -72,20 +86,19 @@ export default function Hero({
         <div className="relative z-20 pointer-events-auto flex items-center justify-between">
           <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 bg-white/[0.04] backdrop-blur-xl border border-white/[0.08]">
             <span
-              className="w-1.5 h-1.5 rounded-full animate-pulse"
-              style={{ backgroundColor: activeRing.accentColor }}
+              className="w-1.5 h-1.5 rounded-full animate-pulse bg-crimson"
             />
             <span className="text-[11px] font-medium tracking-widest uppercase text-porcelain-muted">
-              Subterranean Atelier · Series 2026
+              Subterranean Atelier · 9 Bespoke Formations
             </span>
           </div>
 
           <div className="hidden sm:flex items-center gap-3 text-xs text-porcelain-dark font-mono">
             <span>MOHS 9.0</span>
             <span>·</span>
-            <span>TUNGSTEN CARBIDE</span>
+            <span>DRACO COMPRESSED</span>
             <span>·</span>
-            <span>COMFORT FIT</span>
+            <span>AUTO-NORMALIZED</span>
           </div>
         </div>
 
@@ -101,7 +114,7 @@ export default function Hero({
             </h1>
 
             <p className="text-sm sm:text-base text-porcelain-muted max-w-md font-light leading-relaxed mb-8">
-              Subterranean high jewelry sintered under 1,500°C vacuum crucibles with cryogenic crystal stabilization. Engineered for eternal presence.
+              Nine bespoke sculptural rings for Men, Women, and Unisex. Sintered in subterranean vacuum crucibles with cryogenic gemstone stabilization.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
@@ -109,7 +122,7 @@ export default function Hero({
                 onClick={onExploreClick}
                 className="rounded-full bg-[#F5F5F7] text-[#050507] hover:bg-white hover:scale-105 active:scale-95 transition-all duration-300 px-7 py-3.5 font-medium text-xs sm:text-sm tracking-wide shadow-[0_10px_30px_rgba(255,255,255,0.15)] flex items-center gap-2.5 cursor-pointer group"
               >
-                <span>Explore Editions</span>
+                <span>Explore 9 Editions</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </button>
 
@@ -121,28 +134,28 @@ export default function Hero({
           </motion.div>
         </div>
 
-        {/* 4. Bottom Floating Ring Switcher Dock (Inspired by Reference Video) */}
+        {/* 4. Bottom Floating Ring Switcher Dock */}
         <div className="relative z-20 pointer-events-auto flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
           <div className="w-full sm:w-auto">
             <span className="text-[10px] font-mono tracking-widest uppercase text-porcelain-dark block mb-2 px-1">
               Live 3D Specimen Dock
             </span>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full sm:max-w-2xl">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full sm:max-w-2xl">
               {FEATURED_HERO_RINGS.map((ring) => {
-                const isActive = activeEdition === ring.id;
+                const isActive = activeRing.id === ring.id;
                 return (
                   <div
                     key={ring.id}
                     onClick={() => onSelectEdition && onSelectEdition(ring.id)}
-                    className={`rounded-2xl backdrop-blur-xl border p-3 sm:p-3.5 flex items-center gap-3 transition-all duration-300 cursor-pointer group ${
+                    className={`rounded-2xl backdrop-blur-xl border p-2.5 sm:p-3 flex items-center gap-2.5 transition-all duration-300 cursor-pointer group ${
                       isActive
-                        ? `bg-white/[0.08] border-white/30 shadow-[0_10px_30px_rgba(0,0,0,0.6)] ${ring.glowClass}`
+                        ? `bg-white/[0.12] border-white/40 shadow-[0_10px_30px_rgba(0,0,0,0.6)] ${ring.glowClass}`
                         : 'bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06] hover:border-white/20'
                     }`}
                   >
                     {/* Ring Photo breaking slightly above / left */}
-                    <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0 -mt-2 -ml-1 transition-transform group-hover:scale-110">
+                    <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 -mt-1 -ml-1 transition-transform group-hover:scale-110">
                       <img
                         src={ring.image}
                         alt={ring.name}
@@ -152,12 +165,9 @@ export default function Hero({
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-1">
-                        <h4 className="font-display font-semibold text-xs sm:text-sm text-porcelain truncate">
+                        <h4 className="font-display font-semibold text-xs text-porcelain truncate">
                           {ring.name}
                         </h4>
-                        <span className="text-xs text-porcelain-muted font-medium font-mono">
-                          {ring.price}
-                        </span>
                       </div>
                       <p className="text-[10px] text-porcelain-dark truncate">
                         {ring.subtitle}

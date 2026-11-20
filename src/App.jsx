@@ -191,10 +191,11 @@ export default function App() {
             onOpenSizing={() => handleNavigate('sizing')}
           />
 
-          {/* Section 02: Full 6-Ring Curated Editions Gallery */}
+          {/* Section 02: Full 9-Ring Curated Editions Gallery */}
           <CollectionSection
             onOpenInspect={(ring) => setInspectRing(ring)}
             onAddToVault={handleAddToVault}
+            onSelectEdition={setActiveEdition}
           />
 
           {/* Section 03: Sizing Protocol & Interactive Caliber Matcher */}

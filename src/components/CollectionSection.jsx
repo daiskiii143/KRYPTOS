@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { RING_EDITIONS, RING_CATEGORIES } from '../data/rings';
+import { RING_EDITIONS, GENDER_FILTERS } from '../data/rings';
 import EmergeFromRing from './animation/EmergeFromRing';
 import { Check, Eye, Plus } from 'lucide-react';
 
-export default function CollectionSection({ onOpenInspect, onAddToVault }) {
+export default function CollectionSection({ onOpenInspect, onAddToVault, onSelectEdition }) {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedSizes, setSelectedSizes] = useState({});
   const [quickAddedId, setQuickAddedId] = useState(null);
 
-  // Filter rings according to category pill
+  // Filter rings according to category pill (All / Men / Women / Unisex)
   const filteredRings = RING_EDITIONS.filter((ring) => {
     if (activeCategory === 'all') return true;
-    return ring.categories && ring.categories.includes(activeCategory);
+    return (
+      ring.gender === activeCategory ||
+      (ring.categories && ring.categories.includes(activeCategory))
+    );
   });
 
   const handleSizeChange = (ringId, size) => {
@@ -19,10 +22,18 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
   };
 
   const handleQuickAdd = (ring) => {
-    const size = selectedSizes[ring.id] || '10';
+    const defaultSz = ring.sizes ? ring.sizes[Math.floor(ring.sizes.length / 2)] : '10';
+    const size = selectedSizes[ring.id] || defaultSz;
     onAddToVault(ring, `US ${size}`, '');
     setQuickAddedId(ring.id);
     setTimeout(() => setQuickAddedId(null), 1400);
+  };
+
+  const handleCardClick = (ring) => {
+    if (onSelectEdition) {
+      onSelectEdition(ring.id);
+    }
+    onOpenInspect(ring);
   };
 
   return (
@@ -38,16 +49,16 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
           </div>
 
           <h2 className="font-display font-bold text-3xl sm:text-5xl md:text-6xl tracking-tight text-porcelain leading-[1.05]">
-            The Six Formations
+            The Nine Formations
           </h2>
 
           <p className="mt-4 text-sm sm:text-base font-light text-porcelain-muted max-w-xl leading-relaxed">
-            Six distinct expressions of gothic metallurgy and gemstone inlay, resting upon dark volcanic slate. Engineered in 8.0 mm comfort-fit profiles.
+            Nine distinct expressions of gothic metallurgy, gemstone inlay, and sculptural fluid metal, resting upon dark volcanic slate. Engineered in bespoke comfort-fit profiles.
           </p>
 
-          {/* Category Filter Pills (Zero Sharp Rectangles) */}
+          {/* Primary Category Filter Pills: All · Men · Women · Unisex */}
           <div className="mt-8 flex flex-wrap items-center gap-2">
-            {RING_CATEGORIES.map((cat) => {
+            {GENDER_FILTERS.map((cat) => {
               const isSelected = activeCategory === cat.id;
               return (
                 <button
@@ -67,10 +78,11 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
         </div>
       </EmergeFromRing>
 
-      {/* 2. Full 6-Ring Grid with Macro Photography (Wrapped in EmergeFromRing per item) */}
+      {/* 2. Full 9-Ring Grid with Macro Photography */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {filteredRings.map((ring, idx) => {
-          const currentSize = selectedSizes[ring.id] || '10';
+          const defaultSz = ring.sizes ? ring.sizes[Math.floor(ring.sizes.length / 2)] : '10';
+          const currentSize = selectedSizes[ring.id] || defaultSz;
           const isJustAdded = quickAddedId === ring.id;
 
           return (
@@ -84,7 +96,7 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
               <div className="flex flex-col justify-between h-full rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] p-5 sm:p-6 hover:border-white/20 hover:bg-white/[0.05] transition-all duration-500 shadow-[0_15px_40px_rgba(0,0,0,0.5)] overflow-hidden">
                 {/* Product Photography Container */}
                 <div
-                  onClick={() => onOpenInspect(ring)}
+                  onClick={() => handleCardClick(ring)}
                   className="relative aspect-square w-full rounded-2xl overflow-hidden bg-black/50 cursor-pointer mb-5 group/img"
                 >
                   <img
@@ -96,12 +108,17 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
 
                   {/* Edition Tag Pill */}
-                  <div className="absolute top-3.5 left-3.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 border border-white/10 text-[10px] font-mono tracking-wider uppercase text-porcelain-muted">
-                    EDITION {ring.editionNumber}
+                  <div className="absolute top-3.5 left-3.5 flex items-center gap-1.5">
+                    <span className="rounded-full bg-black/60 backdrop-blur-md px-3 py-1 border border-white/10 text-[10px] font-mono text-porcelain font-medium tracking-wider uppercase">
+                      NO. {ring.editionNumber}
+                    </span>
+                    <span className="rounded-full bg-white/10 backdrop-blur-md px-2.5 py-1 border border-white/10 text-[10px] font-mono text-porcelain-muted capitalize">
+                      {ring.gender}
+                    </span>
                   </div>
 
-                  {/* Price Tag Pill */}
-                  <div className="absolute top-3.5 right-3.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 border border-white/10 font-mono text-xs font-semibold text-porcelain">
+                  {/* Price Pill */}
+                  <div className="absolute top-3.5 right-3.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 border border-white/10 text-xs font-mono font-medium text-porcelain">
                     ${ring.price}
                   </div>
 
@@ -119,7 +136,7 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[11px] font-medium uppercase tracking-wider text-crimson">
-                        {ring.category}
+                        {ring.style || ring.category}
                       </span>
                       <span className="text-xs font-mono text-porcelain-dark">
                         {ring.weight.split('(')[0]}
@@ -127,7 +144,7 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
                     </div>
 
                     <h3
-                      onClick={() => onOpenInspect(ring)}
+                      onClick={() => handleCardClick(ring)}
                       className="font-display font-bold text-xl sm:text-2xl text-porcelain tracking-tight cursor-pointer hover:text-white transition-colors"
                     >
                       {ring.name}
@@ -149,12 +166,12 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       {ring.sizes.map((sz) => (
                         <button
                           key={sz}
                           onClick={() => handleSizeChange(ring.id, sz)}
-                          className={`flex-1 py-1.5 rounded-full text-xs font-mono transition-all duration-200 cursor-pointer ${
+                          className={`flex-1 min-w-[28px] py-1.5 rounded-full text-xs font-mono transition-all duration-200 cursor-pointer ${
                             currentSize === sz
                               ? 'bg-[#F5F5F7] text-[#050507] font-bold shadow-sm'
                               : 'bg-white/[0.03] border border-white/[0.08] text-porcelain-muted hover:text-porcelain hover:bg-white/[0.08]'
@@ -191,7 +208,7 @@ export default function CollectionSection({ onOpenInspect, onAddToVault }) {
                     </button>
 
                     <button
-                      onClick={() => onOpenInspect(ring)}
+                      onClick={() => handleCardClick(ring)}
                       className="px-4 py-3 rounded-full bg-white/[0.04] hover:bg-white/[0.10] active:scale-95 border border-white/10 text-xs font-medium text-porcelain transition-all cursor-pointer flex items-center gap-1.5"
                     >
                       <Eye className="w-3.5 h-3.5 text-porcelain-muted" />

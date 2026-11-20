@@ -29,7 +29,7 @@ export default function InspectModal({ ring, isOpen, onClose, onAddToVault, onOp
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="text-[11px] font-mono text-crimson font-medium uppercase tracking-wider">
-                EDITION {ring.editionNumber} / 06 · {ring.category}
+                EDITION {ring.editionNumber} / 09 · {ring.gender || ''} · {ring.style || ring.category}
               </span>
               <span className="text-white/20">·</span>
               <span className="text-xs text-porcelain-dark font-mono">
