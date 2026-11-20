@@ -181,8 +181,8 @@ export default function App() {
           onExploreClick={() => handleNavigate('atelier')}
         />
 
-        {/* Right-Hand Content Column (ml-[34%] on desktop) */}
-        <main className="w-full lg:ml-[34%] lg:w-[66%] max-w-4xl px-6 sm:px-10 md:px-14 bg-transparent">
+        {/* Right-Hand Content Column (ml-[34%] on desktop with pt-28 top clearance) */}
+        <main className="w-full lg:ml-[34%] lg:w-[66%] max-w-4xl px-6 sm:px-10 md:px-14 bg-transparent pt-28">
           {/* Section 01: Ejected Headline + Interactive Edition Switcher (Unboxed) */}
           <AtelierSection
             activeEdition={activeEdition}

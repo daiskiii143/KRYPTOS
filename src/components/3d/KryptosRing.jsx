@@ -36,15 +36,33 @@ export default function KryptosRing({
     });
   }, [texCrimson, texEclipse, texAether]);
 
-  // Clone scene on first mount to ensure isolated instance
-  const clonedScene = useMemo(() => scene.clone(true), [scene]);
+  // Clone scene and auto-normalize bounding box to exactly 1.0 unit centered at (0, 0, 0)
+  const { normalizedScene, baseNormScale } = useMemo(() => {
+    const clone = scene.clone(true);
+
+    // Compute exact bounding box of the cloned geometry
+    const box = new THREE.Box3().setFromObject(clone);
+    const center = new THREE.Vector3();
+    const size = new THREE.Vector3();
+    box.getCenter(center);
+    box.getSize(size);
+
+    // Center cloned geometry at (0, 0, 0)
+    clone.position.sub(center);
+
+    // Compute base normalization scale so max dimension is guaranteed to be 1.0 world unit
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const normScale = maxDim > 0 ? 1.0 / maxDim : 1.0;
+
+    return { normalizedScene: clone, baseNormScale: normScale };
+  }, [scene]);
 
   // Material references
   const materialsRef = useRef({});
 
   // Initialize and isolate materials for realistic dark metal PBR
   useEffect(() => {
-    clonedScene.traverse((child) => {
+    normalizedScene.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
@@ -74,7 +92,7 @@ export default function KryptosRing({
         }
       }
     });
-  }, [clonedScene]);
+  }, [normalizedScene]);
 
   // Update materials when activeEdition changes (Strictly subtle, dark-luxury PBR)
   useEffect(() => {
@@ -172,19 +190,21 @@ export default function KryptosRing({
     }
   }, [activeEdition, texCrimson, texEclipse, texAether]);
 
-  // Frame update: Strict Single-Axis Spin + Docking Scale & Coordinates
+  // Frame update: Strict Single-Axis Spin + Auto-Normalized Scale & Coordinates
   useFrame((state) => {
     if (!outerGroupRef.current || !innerSpinRef.current) return;
 
     const isMobile = window.innerWidth < 1024;
 
-    if (scrollProgress <= 0.14) {
+    if (scrollProgress <= 0.12) {
       // -------------------------------------------------------------------
-      // HERO PHASE (scroll = 0% – 14%): Bold Large Macro View of the Ring (scale: 1.55)
+      // HERO PHASE (scroll = 0% – 12%): Bold, commanding centerpiece
+      // targetScale = baseNormScale * 2.55 (exact 2.55 world units wide)
       // -------------------------------------------------------------------
-      const targetScale = isMobile ? 1.25 : 1.55;
+      const heroScaleMult = isMobile ? 2.10 : 2.55;
+      const targetScale = baseNormScale * heroScaleMult;
       const targetX = 0;
-      const targetY = isMobile ? -0.12 : 0;
+      const targetY = isMobile ? -0.10 : 0;
       const targetZ = 0;
 
       outerGroupRef.current.position.x = THREE.MathUtils.lerp(outerGroupRef.current.position.x, targetX, 0.1);
@@ -192,8 +212,8 @@ export default function KryptosRing({
       outerGroupRef.current.position.z = THREE.MathUtils.lerp(outerGroupRef.current.position.z, targetZ, 0.1);
       outerGroupRef.current.scale.setScalar(THREE.MathUtils.lerp(outerGroupRef.current.scale.x, targetScale, 0.1));
 
-      // Fixed subtle hero tilt that stays calm and consistent: [0.32, 0, -0.15]
-      outerGroupRef.current.rotation.set(0.32, 0, -0.15);
+      // Fixed subtle hero tilt: rotation={[0.36, 0, -0.15]}
+      outerGroupRef.current.rotation.set(0.36, 0, -0.15);
 
       // Spin ONLY on its single local axis (rotation.y) + subtle idle drift + user drag
       const idleSpin = state.clock.elapsedTime * 0.18;
@@ -204,29 +224,30 @@ export default function KryptosRing({
       innerSpinRef.current.rotation.z = 0;
     } else {
       // -------------------------------------------------------------------
-      // LEFT-RAIL SCROLL DIAL PHASE (scroll > 14%):
-      // Docks to left rail (scale = 0.52, X = -2.2 on desktop)
+      // LEFT-RAIL SCROLL DIAL PHASE (scroll > 12%):
+      // Docks to left rail (targetScale = baseNormScale * 1.35 at X = -1.85, Y = 0)
       // -------------------------------------------------------------------
-      const dockProgress = THREE.MathUtils.clamp((scrollProgress - 0.14) / 0.10, 0, 1);
+      const dockProgress = THREE.MathUtils.clamp((scrollProgress - 0.12) / 0.10, 0, 1);
       const easeDock = 1 - Math.pow(1 - dockProgress, 3);
 
-      const targetX = isMobile ? 0 : THREE.MathUtils.lerp(0, -2.2, easeDock);
-      const targetY = isMobile ? 1.3 : 0;
+      const targetX = isMobile ? 0 : THREE.MathUtils.lerp(0, -1.85, easeDock);
+      const targetY = isMobile ? 1.2 : 0;
       const targetZ = 0;
-      const targetScale = isMobile
-        ? THREE.MathUtils.lerp(1.25, 0.40, easeDock)
-        : THREE.MathUtils.lerp(1.55, 0.52, easeDock);
+      const dockedScaleMult = isMobile ? 1.05 : 1.35;
+      const heroScaleMult = isMobile ? 2.10 : 2.55;
+      const currentScaleMult = THREE.MathUtils.lerp(heroScaleMult, dockedScaleMult, easeDock);
+      const targetScale = baseNormScale * currentScaleMult;
 
       outerGroupRef.current.position.x = THREE.MathUtils.lerp(outerGroupRef.current.position.x, targetX, 0.1);
       outerGroupRef.current.position.y = THREE.MathUtils.lerp(outerGroupRef.current.position.y, targetY, 0.1);
       outerGroupRef.current.position.z = THREE.MathUtils.lerp(outerGroupRef.current.position.z, targetZ, 0.1);
       outerGroupRef.current.scale.setScalar(THREE.MathUtils.lerp(outerGroupRef.current.scale.x, targetScale, 0.1));
 
-      // Outer tilt stays completely locked at [0.32, 0, -0.15]
-      outerGroupRef.current.rotation.set(0.32, 0, -0.15);
+      // Outer tilt stays completely locked at [0.36, 0, -0.15]
+      outerGroupRef.current.rotation.set(0.36, 0, -0.15);
 
       // Inner spin: Spin ONLY on its single local axis mapped smoothly to scroll progress + subtle idle drift
-      const scrollSpin = ((scrollProgress - 0.14) / 0.86) * Math.PI * 5.0;
+      const scrollSpin = ((scrollProgress - 0.12) / 0.88) * Math.PI * 5.0;
       const idleDrift = state.clock.elapsedTime * 0.08;
       const targetRotY = scrollSpin + idleDrift + (userRotation?.x || 0) * 1.5;
 
@@ -237,9 +258,9 @@ export default function KryptosRing({
   });
 
   return (
-    <group ref={outerGroupRef} rotation={[0.32, 0, -0.15]} position={[0, 0, 0]} scale={1.55}>
+    <group ref={outerGroupRef} rotation={[0.36, 0, -0.15]} position={[0, 0, 0]} scale={1}>
       <group ref={innerSpinRef}>
-        <primitive object={clonedScene} scale={0.01} />
+        <primitive object={normalizedScene} />
       </group>
     </group>
   );

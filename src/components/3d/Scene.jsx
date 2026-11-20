@@ -11,7 +11,7 @@ export default function Scene({
   return (
     <div className="fixed inset-0 pointer-events-none z-10 w-full h-full">
       <Canvas
-        camera={{ position: [0, 0, 4.4], fov: 42 }}
+        camera={{ position: [0, 0, 5.2], fov: 38 }}
         gl={{
           antialias: true,
           alpha: true,

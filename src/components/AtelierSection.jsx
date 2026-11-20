@@ -22,7 +22,7 @@ export default function AtelierSection({
   };
 
   return (
-    <section id="atelier" className="py-24 bg-transparent">
+    <section id="atelier" className="py-24 pt-28 bg-transparent">
       {/* 1. Ejected Editorial Manifesto (Wrapped in EmergeFromRing) */}
       <EmergeFromRing originX={-320} originY={25} rotation={-2}>
         <div className="mb-16">
