@@ -4,8 +4,8 @@ import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { RING_EDITIONS } from '../../data/rings';
 
-// Configure local Draco decoder path
-useGLTF.setDecoderPath('/draco/');
+// Configure local Draco decoder path with Vite base path
+useGLTF.setDecoderPath(`${import.meta.env.BASE_URL}draco/`);
 
 // Preload all 9 ring geometries for instant switching
 RING_EDITIONS.forEach((ring) => {
@@ -109,7 +109,7 @@ export default function KryptosRing({
     );
   }, [activeEdition]);
 
-  const modelPath = activeRing.modelPath || '/models/kryptos-ring.glb';
+  const modelPath = activeRing.modelPath || `${import.meta.env.BASE_URL}models/kryptos-ring.glb`;
 
   // Frame update: Strict Single-Axis Spin + Auto-Normalized Scale & Coordinates
   useFrame((state) => {

@@ -9,7 +9,7 @@ const FEATURED_HERO_RINGS = [
     name: 'The Sovereign',
     price: '$480',
     subtitle: 'Men · Crimson Filigree',
-    image: '/images/rings/sovereign.png',
+    image: `${import.meta.env.BASE_URL}images/rings/sovereign.png`,
     accentColor: '#DC2626',
     glowClass: 'shadow-[0_0_25px_rgba(220,38,38,0.25)]'
   },
@@ -18,7 +18,7 @@ const FEATURED_HERO_RINGS = [
     name: 'The Eclipse',
     price: '$440',
     subtitle: 'Men · Faceted Obsidian',
-    image: '/images/rings/eclipse.png',
+    image: `${import.meta.env.BASE_URL}images/rings/eclipse.png`,
     accentColor: '#94A3B8',
     glowClass: 'shadow-[0_0_25px_rgba(148,163,184,0.25)]'
   },
@@ -27,7 +27,7 @@ const FEATURED_HERO_RINGS = [
     name: 'The Chronos',
     price: '$540',
     subtitle: 'Men · Octagonal Signet',
-    image: '/images/rings/chronos.png',
+    image: `${import.meta.env.BASE_URL}images/rings/chronos.png`,
     accentColor: '#38BDF8',
     glowClass: 'shadow-[0_0_25px_rgba(56,189,248,0.25)]'
   },
@@ -36,7 +36,7 @@ const FEATURED_HERO_RINGS = [
     name: 'The Nyx Thorn',
     price: '$470',
     subtitle: "Women · Briar & Garnet",
-    image: '/images/rings/nyx-thorn.png',
+    image: `${import.meta.env.BASE_URL}images/rings/nyx-thorn.png`,
     accentColor: '#F43F5E',
     glowClass: 'shadow-[0_0_25px_rgba(244,63,94,0.25)]'
   }
