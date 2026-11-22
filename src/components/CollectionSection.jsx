@@ -102,6 +102,8 @@ export default function CollectionSection({ onOpenInspect, onAddToVault, onSelec
                   <img
                     src={ring.image}
                     alt={ring.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover object-center transform group-hover/img:scale-105 transition-transform duration-700 ease-out"
                   />
                   {/* Subtle rim highlight gradient overlay */}

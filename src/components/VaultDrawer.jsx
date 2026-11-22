@@ -135,6 +135,8 @@ export default function VaultDrawer({
                   <img
                     src={item.ring.image}
                     alt={item.ring.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                 </div>

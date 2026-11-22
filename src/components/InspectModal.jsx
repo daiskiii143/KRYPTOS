@@ -60,6 +60,8 @@ export default function InspectModal({ ring, isOpen, onClose, onAddToVault, onOp
               <img
                 src={ring.image}
                 alt={ring.name}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-50" />
