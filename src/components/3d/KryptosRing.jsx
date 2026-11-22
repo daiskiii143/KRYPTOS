@@ -24,6 +24,9 @@ function RingGeometry({ modelPath, ringId }) {
   const normalizedScene = useMemo(() => {
     const clone = scene.clone(true);
 
+    // Reset baked rotation on root node so ring lies flat
+    clone.traverse(o => { if (/Root$/.test(o.name)) o.quaternion.identity(); });
+
     // Compute exact bounding box of the cloned geometry
     const box = new THREE.Box3().setFromObject(clone);
     const center = new THREE.Vector3();
@@ -31,15 +34,13 @@ function RingGeometry({ modelPath, ringId }) {
     box.getCenter(center);
     box.getSize(size);
 
-    // Center cloned geometry cleanly at (0, 0, 0)
-    clone.position.sub(center);
-
     // Auto-normalize scale so max dimension is exactly 1.0 unit
     const maxDim = Math.max(size.x, size.y, size.z);
-    if (maxDim > 0) {
-      const scale = 1.0 / maxDim;
-      clone.scale.set(scale, scale, scale);
-    }
+    const scale = maxDim > 0 ? 1.0 / maxDim : 1.0;
+    clone.scale.set(scale, scale, scale);
+
+    // Center cloned geometry cleanly at (0, 0, 0) taking scale factor into account
+    clone.position.copy(center).multiplyScalar(-scale);
 
     // Material enhancement for web luxury PBR
     clone.traverse((child) => {
@@ -147,8 +148,8 @@ export default function KryptosRing({
         THREE.MathUtils.lerp(outerGroupRef.current.scale.x, targetScale, 0.1)
       );
 
-      // Fixed subtle hero tilt: rotation={[0.36, 0, -0.15]}
-      outerGroupRef.current.rotation.set(0.36, 0, -0.15);
+      // Fixed subtle hero tilt: rotation={[0.92, 0, -0.15]}
+      outerGroupRef.current.rotation.set(0.92, 0, -0.15);
 
       // Spin ONLY on its single local axis (rotation.y) + subtle idle drift + user drag
       const idleSpin = state.clock.elapsedTime * 0.18;
@@ -204,8 +205,8 @@ export default function KryptosRing({
         THREE.MathUtils.lerp(outerGroupRef.current.scale.x, targetScale, 0.1)
       );
 
-      // Outer tilt stays completely locked at [0.36, 0, -0.15]
-      outerGroupRef.current.rotation.set(0.36, 0, -0.15);
+      // Outer tilt stays completely locked at [0.92, 0, -0.15]
+      outerGroupRef.current.rotation.set(0.92, 0, -0.15);
 
       // Inner spin: Spin ONLY on its single local axis mapped smoothly to scroll progress + subtle idle drift
       const scrollSpin =
@@ -226,7 +227,7 @@ export default function KryptosRing({
   return (
     <group
       ref={outerGroupRef}
-      rotation={[0.36, 0, -0.15]}
+      rotation={[0.92, 0, -0.15]}
       position={[0, 0, 0]}
       scale={1}
     >
