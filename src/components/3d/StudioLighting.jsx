@@ -7,7 +7,6 @@ export default function StudioLighting({ activeEdition = 'sovereign' }) {
   const isEclipse = activeEdition === 'eclipse' || activeEdition === 'chronos';
   
   const accentRimColor = isEmerald ? '#10B981' : isEclipse ? '#CBD5E1' : '#DC2626';
-  const accentRimDeep = isEmerald ? '#047857' : isEclipse ? '#64748B' : '#8B0015';
 
   return (
     <>
@@ -66,24 +65,13 @@ export default function StudioLighting({ activeEdition = 'sovereign' }) {
           rotation={[0, -Math.PI / 4, 0]}
         />
 
-        {/* 3. Warm Crimson Signature Rim Reflector 1 (Back left edge) */}
+        {/* Soft Crimson Signature Rim Reflector */}
         <Lightformer
-          form="rect"
-          intensity={3.6}
+          form="circle"
+          scale={7}
+          intensity={0.85}
           color={accentRimColor}
-          scale={[1.2, 8, 1]}
-          position={[-2.8, 2.5, -2.5]}
-          rotation={[0, Math.PI / 3, 0]}
-        />
-
-        {/* 4. Warm Crimson Signature Rim Reflector 2 (Back bottom right edge) */}
-        <Lightformer
-          form="rect"
-          intensity={3.0}
-          color={accentRimDeep}
-          scale={[1.0, 6, 1]}
-          position={[2.8, -2.2, -2.0]}
-          rotation={[0, -Math.PI / 3, 0]}
+          position={[-3, 2, -3]}
         />
 
         {/* Front-facing soft fill card */}
