@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, Suspense } from 'react';
+import React, { useRef, useMemo, useEffect, Suspense } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
@@ -7,16 +7,15 @@ import { RING_EDITIONS } from '../../data/rings';
 // Configure local Draco decoder path with Vite base path
 useGLTF.setDecoderPath(`${import.meta.env.BASE_URL}draco/`);
 
-// Preload all 9 ring geometries for instant switching
-RING_EDITIONS.forEach((ring) => {
-  if (ring.modelPath) {
-    try {
-      useGLTF.preload(ring.modelPath);
-    } catch (e) {
-      // ignore
-    }
+// Preload only 'sovereign' immediately on startup
+const sovereignRing = RING_EDITIONS.find((r) => r.id === 'sovereign');
+if (sovereignRing?.modelPath) {
+  try {
+    useGLTF.preload(sovereignRing.modelPath);
+  } catch (e) {
+    // ignore
   }
-});
+}
 
 function RingGeometry({ modelPath, ringId }) {
   const { scene } = useGLTF(modelPath);
@@ -111,6 +110,83 @@ export default function KryptosRing({
   }, [activeEdition]);
 
   const modelPath = activeRing.modelPath || `${import.meta.env.BASE_URL}models/kryptos-ring.glb`;
+
+  // Staged preloading: dock rings on requestIdleCallback, remaining collection rings on viewport intersection
+  useEffect(() => {
+    // 1. Preload the other 3 hero-dock rings on requestIdleCallback after first paint
+    const heroDockRings = ['eclipse', 'chronos', 'nyx-thorn'];
+    const preloadHeroDock = () => {
+      heroDockRings.forEach((id) => {
+        const ring = RING_EDITIONS.find((r) => r.id === id);
+        if (ring?.modelPath) {
+          try {
+            useGLTF.preload(ring.modelPath);
+          } catch (e) {
+            // ignore
+          }
+        }
+      });
+    };
+
+    let idleId;
+    let timerId;
+    if (typeof window !== 'undefined') {
+      if ('requestIdleCallback' in window) {
+        idleId = window.requestIdleCallback(preloadHeroDock, { timeout: 2000 });
+      } else {
+        timerId = setTimeout(preloadHeroDock, 300);
+      }
+    }
+
+    // 2. Preload the remaining 5 collection rings when #collection enters viewport
+    const remainingRingIds = [
+      'aether-relic',
+      'nocturne',
+      'vespera',
+      'selene-crown',
+      'seraphina-coil'
+    ];
+
+    let observer;
+    const attachObserver = () => {
+      const collectionEl = document.getElementById('collection');
+      if (collectionEl && typeof IntersectionObserver !== 'undefined') {
+        observer = new IntersectionObserver(
+          (entries) => {
+            if (entries[0].isIntersecting) {
+              remainingRingIds.forEach((id) => {
+                const ring = RING_EDITIONS.find((r) => r.id === id);
+                if (ring?.modelPath) {
+                  try {
+                    useGLTF.preload(ring.modelPath);
+                  } catch (e) {
+                    // ignore
+                  }
+                }
+              });
+              observer.disconnect();
+            }
+          },
+          { rootMargin: '200px' }
+        );
+        observer.observe(collectionEl);
+      }
+    };
+
+    attachObserver();
+
+    return () => {
+      if (idleId && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId);
+      }
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+      if (observer) {
+        observer.disconnect();
+      }
+    };
+  }, []);
 
   // Frame update: Strict Single-Axis Spin + Auto-Normalized Scale & Coordinates
   useFrame((state) => {
