@@ -20,7 +20,7 @@ export default function SizingSection() {
           <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 bg-white/[0.04] border border-white/[0.08] mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-crimson" />
             <span className="text-[11px] font-medium tracking-widest uppercase text-porcelain-muted">
-              Fit Protocol · Chapter III
+              Sizing & Fit Guide
             </span>
           </div>
 
@@ -29,22 +29,19 @@ export default function SizingSection() {
           </h2>
 
           <p className="mt-4 text-sm sm:text-base font-light text-porcelain-muted max-w-xl leading-relaxed">
-            Tungsten carbide cannot be annealed or stretched. Precision sizing ensures lifetime comfort across our 8.0 mm comfort-fit radial profiles.
+            Tungsten carbide cannot be annealed or stretched. Precision sizing ensures lifetime comfort across our comfort-fit radial profiles.
           </p>
         </div>
       </EmergeFromRing>
 
-      {/* 1. Interactive Visual Ring-Diameter Matcher (Zero Sharp Rectangles) */}
+      {/* 1. Interactive Visual Ring-Diameter Matcher */}
       <EmergeFromRing originX={-280} originY={35} rotation={-1.5}>
         <div className="rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] p-6 sm:p-10 mb-10 space-y-8 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <Ruler className="w-4 h-4 text-crimson" />
-                <span className="text-xs font-mono text-crimson font-medium">
-                  CALIBER GAUGE
-                </span>
-              </div>
+              <span className="text-[11px] font-mono uppercase tracking-wider text-white/40 block mb-1">
+                Visual Sizer
+              </span>
               <h3 className="font-display font-bold text-xl sm:text-2xl text-porcelain">
                 Interactive Diameter Matcher
               </h3>

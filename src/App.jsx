@@ -14,6 +14,7 @@ import { RING_EDITIONS } from './data/rings';
 
 export default function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeSection, setActiveSection] = useState('hero');
   const [activeEdition, setActiveEdition] = useState('sovereign');
   const [userRotation, setUserRotation] = useState({ x: 0, y: 0 });
 
@@ -45,16 +46,31 @@ export default function App() {
       touchMultiplier: 1.5
     });
     lenisRef.current = lenis;
+    if (typeof window !== 'undefined') {
+      window.__lenis = lenis;
 
-    const handleScroll = () => {
+      const params = new URLSearchParams(window.location.search);
+      const scrollParam = params.get('scroll');
+      if (scrollParam) {
+        setTimeout(() => {
+          const pct = parseFloat(scrollParam) / 100;
+          const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+          lenis.scrollTo(totalScroll * pct, { immediate: true });
+        }, 300);
+      }
+    }
+
+    const handleScroll = (e) => {
+      const scrollY = typeof e?.scroll === 'number' ? e.scroll : (window.scrollY || document.documentElement.scrollTop || 0);
       const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
       if (totalScroll > 0) {
-        const progress = Math.min(Math.max(window.scrollY / totalScroll, 0), 1);
+        const progress = Math.min(Math.max(scrollY / totalScroll, 0), 1);
         setScrollProgress(progress);
       }
     };
 
     lenis.on('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     function raf(time) {
       lenis.raf(time);
@@ -65,12 +81,14 @@ export default function App() {
 
     return () => {
       cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', handleScroll);
       lenis.destroy();
     };
   }, []);
 
   // Smooth navigation handler
   const handleNavigate = useCallback((sectionId) => {
+    setActiveSection(sectionId);
     if (lenisRef.current) {
       if (sectionId === 'hero') {
         lenisRef.current.scrollTo(0, { duration: 1.2 });
@@ -149,6 +167,8 @@ export default function App() {
         vaultCount={vaultItems.reduce((sum, item) => sum + item.quantity, 0)}
         onOpenVault={() => setIsVaultOpen(true)}
         onNavigate={handleNavigate}
+        activeSection={activeSection}
+        isScrolled={scrollProgress > 0.015}
       />
 
       {/* 2. Persistent 3D WebGL Layer (Centered in Hero -> Left Rail Docked Dial) */}
@@ -161,15 +181,10 @@ export default function App() {
       {/* 3. Left Rail Interactive Touch Surface (Active when docked on desktop) */}
       <div
         onPointerDown={handlePointerDown}
-        className={`hidden lg:flex fixed left-0 top-0 bottom-0 w-[34%] z-20 flex-col justify-end p-10 select-none cursor-grab active:cursor-grabbing transition-opacity duration-500 ${
+        className={`hidden lg:flex fixed left-0 top-0 bottom-0 w-[34%] z-20 select-none cursor-grab active:cursor-grabbing transition-opacity duration-500 ${
           scrollProgress > 0.14 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
-      >
-        <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-porcelain-dark flex items-center justify-between border-t border-white/[0.08] pt-4">
-          <span>Mechanical Scroll Dial</span>
-          <span>{Math.round(scrollProgress * 100)}%</span>
-        </div>
-      </div>
+      />
 
       {/* 4. Natural Document Flow Content */}
       <div className="relative z-20 bg-transparent">

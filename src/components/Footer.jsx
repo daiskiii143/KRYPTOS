@@ -35,8 +35,7 @@ export default function Footer({ onNavigate }) {
         </div>
 
         <div className="text-xs text-porcelain-dark font-mono text-left md:text-right">
-          <div>ZURICH · LONDON · REYKJAVIK</div>
-          <div className="mt-1">© 2026 KRYPTOS. All rights reserved.</div>
+          <div>© 2026 KRYPTOS. All rights reserved.</div>
         </div>
       </div>
     </footer>

@@ -44,7 +44,7 @@ export default function CollectionSection({ onOpenInspect, onAddToVault, onSelec
           <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 bg-white/[0.04] border border-white/[0.08] mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-crimson" />
             <span className="text-[11px] font-medium tracking-widest uppercase text-porcelain-muted">
-              Permanent Archive · Chapter II
+              The Collection
             </span>
           </div>
 
