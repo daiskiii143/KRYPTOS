@@ -157,7 +157,7 @@ export default function App() {
 
   return (
     <div
-      className="relative min-h-screen bg-transparent text-porcelain selection:bg-crimson selection:text-white overflow-x-hidden font-sans"
+      className="relative min-h-screen bg-[#0D0D0F] text-[#F2EFE9] selection:bg-[#F2EFE9] selection:text-[#0D0D0F] overflow-x-hidden font-sans"
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
@@ -171,7 +171,7 @@ export default function App() {
         isScrolled={scrollProgress > 0.015}
       />
 
-      {/* 2. Persistent 3D WebGL Layer (Centered in Hero -> Left Rail Docked Dial) */}
+      {/* 2. Persistent 3D WebGL Layer (Centered in Hero Right Column -> Left Rail Docked Dial) */}
       <Scene
         scrollProgress={scrollProgress}
         activeEdition={activeEdition}
@@ -182,31 +182,31 @@ export default function App() {
       <div
         onPointerDown={handlePointerDown}
         className={`hidden lg:flex fixed left-0 top-0 bottom-0 w-[34%] z-20 select-none cursor-grab active:cursor-grabbing transition-opacity duration-500 ${
-          scrollProgress > 0.14 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          scrollProgress > 0.08 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       />
 
       {/* 4. Natural Document Flow Content */}
       <div className="relative z-20 bg-transparent">
-        {/* Hero Section: Centered macro ring view + wordmark (0% – 14%) */}
+        {/* Tight 2-Column Hero Grid: Headline on left, 3D Ring on right */}
         <Hero
-          scrollProgress={scrollProgress}
-          onExploreClick={() => handleNavigate('atelier')}
+          onExploreClick={() => handleNavigate('collection')}
+          onSizingClick={() => handleNavigate('sizing')}
         />
 
-        {/* Right-Hand Content Column (ml-[34%] on desktop with pt-28 top clearance) */}
-        <main className="w-full lg:ml-[34%] lg:w-[66%] max-w-4xl px-6 sm:px-10 md:px-14 bg-transparent pt-28">
-          {/* Section 01: Ejected Headline + Sovereign Configurator */}
-          <AtelierSection
-            onAddToVault={handleAddToVault}
-            onOpenSizing={() => handleNavigate('sizing')}
-          />
-
-          {/* Section 02: Full 9-Ring Curated Editions Gallery */}
+        {/* Right-Hand Content Column (ml-[34%] on desktop with pt-8 top clearance) */}
+        <main className="w-full lg:ml-[34%] lg:w-[66%] max-w-4xl px-6 sm:px-10 md:px-14 bg-transparent pt-8">
+          {/* Section 01: Full 9-Ring Curated Editions Gallery */}
           <CollectionSection
             onOpenInspect={(ring) => setInspectRing(ring)}
             onAddToVault={handleAddToVault}
             onSelectEdition={setActiveEdition}
+          />
+
+          {/* Section 02: Flagship Sovereign Deep Dive & Configurator */}
+          <AtelierSection
+            onAddToVault={handleAddToVault}
+            onOpenSizing={() => handleNavigate('sizing')}
           />
 
           {/* Section 03: Sizing Protocol & Interactive Caliber Matcher */}

@@ -104,15 +104,15 @@ export default function KryptosRing({
 
     const isMobile = window.innerWidth < 1024;
 
-    if (scrollProgress <= 0.12) {
+    if (scrollProgress <= 0.08) {
       // -------------------------------------------------------------------
-      // HERO PHASE (scroll = 0% – 12%): Bold, commanding centerpiece
-      // targetScale = 2.55 (exact 2.55 world units wide)
+      // HERO PHASE (scroll = 0% – 8%): Centered in Right Hero Column (X = 0.75)
+      // On mobile: sits comfortably below text & buttons (Y = -0.62)
       // -------------------------------------------------------------------
-      const heroScaleMult = isMobile ? 2.10 : 2.55;
+      const heroScaleMult = isMobile ? 1.65 : 2.5;
       const targetScale = heroScaleMult;
-      const targetX = 0;
-      const targetY = isMobile ? -0.10 : 0;
+      const targetX = isMobile ? 0 : 0.75;
+      const targetY = isMobile ? -0.62 : 0;
       const targetZ = 0;
 
       outerGroupRef.current.position.x = THREE.MathUtils.lerp(
@@ -150,21 +150,23 @@ export default function KryptosRing({
       innerSpinRef.current.rotation.z = 0;
     } else {
       // -------------------------------------------------------------------
-      // LEFT-RAIL SCROLL DIAL PHASE (scroll > 12%):
-      // Docks to left rail (targetScale = 1.35 at X = -1.85, Y = 0)
+      // LEFT-RAIL SCROLL DIAL PHASE (scroll > 8%):
+      // Glides smoothly from X = 0.75 to X = -1.95 on the left rail
       // -------------------------------------------------------------------
       const dockProgress = THREE.MathUtils.clamp(
-        (scrollProgress - 0.12) / 0.10,
+        (scrollProgress - 0.08) / 0.12,
         0,
         1
       );
       const easeDock = 1 - Math.pow(1 - dockProgress, 3);
 
-      const targetX = isMobile ? 0 : THREE.MathUtils.lerp(0, -1.85, easeDock);
-      const targetY = isMobile ? 1.2 : 0;
+      const startX = isMobile ? 0 : 0.75;
+      const endX = isMobile ? 0 : -1.95;
+      const targetX = THREE.MathUtils.lerp(startX, endX, easeDock);
+      const targetY = isMobile ? -0.62 : 0;
       const targetZ = 0;
-      const dockedScaleMult = isMobile ? 1.05 : 1.35;
-      const heroScaleMult = isMobile ? 2.10 : 2.55;
+      const dockedScaleMult = isMobile ? 0 : 1.35;
+      const heroScaleMult = isMobile ? 1.65 : 2.5;
       const currentScaleMult = THREE.MathUtils.lerp(
         heroScaleMult,
         dockedScaleMult,
@@ -196,7 +198,7 @@ export default function KryptosRing({
 
       // Inner spin: Spin ONLY on its single local axis mapped smoothly to scroll progress + subtle idle drift
       const scrollSpin =
-        ((scrollProgress - 0.12) / 0.88) * Math.PI * 5.0;
+        ((scrollProgress - 0.08) / 0.92) * Math.PI * 5.0;
       const idleDrift = state.clock.elapsedTime * 0.08;
       const targetRotY = scrollSpin + idleDrift + (userRotation?.x || 0) * 1.5;
 

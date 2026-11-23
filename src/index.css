@@ -9,81 +9,52 @@
   }
 
   body {
-    background-color: #050507;
-    color: #F5F5F7;
+    background-color: #0D0D0F;
+    color: #F2EFE9;
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     letter-spacing: -0.01em;
     overflow-x: hidden;
   }
 
-  /* Custom subtle scrollbar */
+  /* Custom subtle luxury scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
   }
   ::-webkit-scrollbar-track {
-    background: #050507;
+    background: #0D0D0F;
   }
   ::-webkit-scrollbar-thumb {
-    background: #1C1D24;
-    border-radius: 3px;
+    background: #232328;
+    border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #2E303A;
+    background: #35353D;
   }
 }
 
 @layer utilities {
-  .glass-panel {
-    background: rgba(10, 11, 15, 0.65);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-  
-  .glass-panel-hover:hover {
-    background: rgba(16, 17, 24, 0.78);
-    border-color: rgba(255, 255, 255, 0.16);
+  .surface-card {
+    background-color: #151518;
+    border: 1px solid rgba(242, 239, 233, 0.08);
   }
 
-  .glass-subtle {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+  .surface-card-hover {
+    transition: all 0.25s ease;
+  }
+  .surface-card-hover:hover {
+    border-color: rgba(242, 239, 233, 0.16);
+    background-color: #19191D;
   }
 
-  .text-glow-crimson {
-    text-shadow: 0 0 20px rgba(220, 38, 38, 0.5), 0 0 40px rgba(220, 38, 38, 0.2);
-  }
-
-  .text-glow-silver {
-    text-shadow: 0 0 15px rgba(245, 245, 247, 0.4);
-  }
-
-  .border-glow-crimson {
-    box-shadow: 0 0 25px rgba(220, 38, 38, 0.25);
-  }
-
-  .navbar-scrim {
-    background-color: rgba(5, 5, 7, 0.88);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  .navbar-rimowa {
+    background-color: rgba(13, 13, 15, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(242, 239, 233, 0.06);
   }
 
   .mask-radial-fade {
     mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 95%);
     -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 95%);
   }
-}
-
-/* Animations */
-@keyframes pulseSlow {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.05); }
-}
-
-.animate-pulse-slow {
-  animation: pulseSlow 4s ease-in-out infinite;
 }

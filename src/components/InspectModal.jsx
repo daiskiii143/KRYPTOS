@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { X, Check, Shield, Sparkles } from 'lucide-react';
 
 export default function InspectModal({ ring, isOpen, onClose, onAddToVault, onOpenSizing }) {
   const [selectedSize, setSelectedSize] = useState('10');
@@ -18,45 +17,39 @@ export default function InspectModal({ ring, isOpen, onClose, onAddToVault, onOp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-2xl animate-fade-in overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#0D0D0F]/85 backdrop-blur-md animate-fade-in overflow-y-auto">
       {/* Backdrop click to dismiss */}
       <div className="fixed inset-0" onClick={onClose} />
 
-      {/* Modal Dialog Card (Zero Sharp Rectangles) */}
-      <div className="relative w-full max-w-4xl rounded-3xl bg-[#090A0E]/95 backdrop-blur-2xl border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.8)] p-6 sm:p-10 z-10 my-auto max-h-[90vh] overflow-y-auto">
+      {/* Modal Dialog Card */}
+      <div className="relative w-full max-w-3xl rounded-xl bg-[#151518] border border-[#F2EFE9]/[0.10] shadow-2xl p-6 sm:p-8 z-10 my-auto max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-white/[0.08] pb-6 mb-8">
+        <div className="flex items-start justify-between border-b border-[#F2EFE9]/[0.08] pb-5 mb-6">
           <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-[11px] font-mono text-crimson font-medium uppercase tracking-wider">
-                EDITION {ring.editionNumber} / 09 · {ring.gender || ''} · {ring.style || ring.category}
-              </span>
-              <span className="text-white/20">·</span>
-              <span className="text-xs text-porcelain-dark font-mono">
-                {ring.weight.split('(')[0]}
-              </span>
-            </div>
-            <h3 className="font-display font-bold text-2xl sm:text-4xl text-porcelain tracking-tight">
+            <span className="text-[11px] text-[#8E8A82] uppercase tracking-wider block mb-1">
+              Edition {ring.editionNumber} · {ring.gender || 'Unisex'} · {ring.style || ring.category}
+            </span>
+            <h3 className="font-sans font-medium text-2xl sm:text-3xl text-[#F2EFE9]">
               {ring.name}
             </h3>
-            <p className="text-xs sm:text-sm text-porcelain-muted font-light mt-1">
+            <p className="text-xs sm:text-sm text-[#8E8A82] font-normal mt-1">
               {ring.subtitle}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="rounded-full p-2.5 text-porcelain-muted hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="text-xs font-medium text-[#8E8A82] hover:text-[#F2EFE9] px-2.5 py-1 transition-colors cursor-pointer"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            Close
           </button>
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
-          {/* Left Column: Macro Photograph */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {/* Left Column: Image & Specs */}
           <div className="space-y-4">
-            <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-black/60 border border-white/[0.08]">
+            <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-[#0D0D0F] border border-[#F2EFE9]/[0.06]">
               <img
                 src={ring.image}
                 alt={ring.name}
@@ -64,92 +57,75 @@ export default function InspectModal({ ring, isOpen, onClose, onAddToVault, onOp
                 decoding="async"
                 className="w-full h-full object-cover object-center"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-50" />
-              <div className="absolute bottom-3.5 left-3.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 border border-white/10 text-[10px] font-mono text-porcelain-muted tracking-wider uppercase">
-                MACRO VOLCANIC SLATE CAPTURE
-              </div>
             </div>
 
-            {/* Metallurgical Specs List */}
-            <div className="rounded-2xl p-4 bg-white/[0.03] border border-white/[0.06] space-y-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-porcelain-dark block mb-1">
-                Verified Technical Parameters
+            {/* Technical Parameters */}
+            <div className="rounded-lg p-3.5 bg-[#0D0D0F] border border-[#F2EFE9]/[0.06] space-y-1.5 text-xs">
+              <span className="text-[10px] text-[#8E8A82] uppercase tracking-wider block">
+                Specifications
               </span>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs font-mono text-porcelain-muted">
+              <div className="grid grid-cols-2 gap-2 text-[#8E8A82]">
                 <div>
-                  <span className="text-porcelain-dark">Hardness: </span>
-                  <span className="text-porcelain font-medium">{ring.hardness}</span>
+                  Hardness: <span className="text-[#F2EFE9]">{ring.hardness.split(' ')[0]} {ring.hardness.split(' ')[1]}</span>
                 </div>
                 <div>
-                  <span className="text-porcelain-dark">Profile Width: </span>
-                  <span className="text-porcelain font-medium">{ring.width}</span>
+                  Width: <span className="text-[#F2EFE9]">{ring.width}</span>
                 </div>
                 <div>
-                  <span className="text-porcelain-dark">Thickness: </span>
-                  <span className="text-porcelain font-medium">{ring.thickness}</span>
+                  Thickness: <span className="text-[#F2EFE9]">{ring.thickness}</span>
                 </div>
                 <div>
-                  <span className="text-porcelain-dark">Core Ingot: </span>
-                  <span className="text-porcelain font-medium truncate block">{ring.core.split(' ')[0]}</span>
+                  Weight: <span className="text-[#F2EFE9]">{ring.weight.split('(')[0]}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Right Column: Narrative & Configuration */}
-          <div className="space-y-6">
-            {/* Editorial Lore */}
+          <div className="space-y-5">
             <div>
-              <span className="text-[11px] font-mono uppercase tracking-wider text-porcelain-dark block mb-1.5">
-                Metallurgical Narrative
+              <span className="text-[11px] text-[#8E8A82] uppercase tracking-wider block mb-1">
+                Narrative
               </span>
-              <p className="text-xs sm:text-sm font-light text-porcelain-muted leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#8E8A82] font-normal leading-relaxed">
                 {ring.description}
               </p>
             </div>
 
-            {/* Price & Allocation */}
-            <div className="rounded-2xl p-4 bg-white/[0.03] border border-white/[0.06] flex items-center justify-between">
-              <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider text-porcelain-dark block">
-                  Vault Allocation Price
-                </span>
-                <span className="font-display font-bold text-2xl text-porcelain">
-                  ${ring.price} USD
-                </span>
-              </div>
-              <span className="rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 text-[11px] font-medium">
-                In Crucible Stock
+            {/* Price Row */}
+            <div className="flex items-baseline justify-between border-y border-[#F2EFE9]/[0.08] py-3">
+              <span className="text-xs text-[#8E8A82]">Price</span>
+              <span className="font-sans font-medium text-lg text-[#F2EFE9]">
+                ${ring.price}
               </span>
             </div>
 
             {/* Size Picker */}
-            <div>
-              <div className="flex items-center justify-between mb-2.5">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
-                  <label className="text-xs font-medium text-porcelain-muted">
-                    Radial Comfort-Fit Size
-                  </label>
+                  <label className="text-[#F2EFE9] font-medium">Select Size</label>
                   {onOpenSizing && (
                     <button
                       onClick={onOpenSizing}
-                      className="text-[11px] text-porcelain-muted underline underline-offset-2 hover:text-porcelain transition-colors"
+                      className="text-[#8E8A82] hover:text-[#F2EFE9] underline underline-offset-4"
                     >
-                      Sizing Guide
+                      Guide
                     </button>
                   )}
                 </div>
-                <span className="text-xs font-mono font-medium text-porcelain">US {selectedSize}</span>
+                <span className="text-[#F2EFE9] font-medium">US {selectedSize}</span>
               </div>
+
               <div className="flex items-center gap-1.5 flex-wrap">
                 {ring.sizes.map((sz) => (
                   <button
                     key={sz}
                     onClick={() => setSelectedSize(sz)}
-                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-mono text-xs transition-all duration-200 ${
+                    className={`w-8 h-8 rounded-full text-xs font-medium flex items-center justify-center transition-colors cursor-pointer ${
                       selectedSize === sz
-                        ? 'bg-[#F5F5F7] text-[#050507] font-bold shadow-sm scale-105'
-                        : 'bg-white/[0.03] border border-white/[0.08] text-porcelain-muted hover:text-porcelain hover:bg-white/[0.08]'
+                        ? 'bg-[#F2EFE9] text-[#0D0D0F]'
+                        : 'bg-[#0D0D0F] border border-[#F2EFE9]/[0.10] text-[#8E8A82] hover:text-[#F2EFE9]'
                     }`}
                   >
                     {sz}
@@ -158,46 +134,34 @@ export default function InspectModal({ ring, isOpen, onClose, onAddToVault, onOp
               </div>
             </div>
 
-            {/* Laser Engraving Input */}
+            {/* Inscription Input (Zero Icons) */}
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-porcelain-muted flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-crimson" />
-                  <span>Complimentary Fiber Laser Inscription</span>
-                </label>
-                <span className="text-[10px] font-mono text-porcelain-dark">
-                  {engravingText.length} / 28
-                </span>
+              <div className="flex items-center justify-between text-xs">
+                <label className="text-[#8E8A82]">Interior Inscription (Optional)</label>
+                <span className="text-[10px] text-[#8E8A82]">{engravingText.length} / 28</span>
               </div>
               <input
                 type="text"
                 maxLength={28}
                 value={engravingText}
                 onChange={(e) => setEngravingText(e.target.value.toUpperCase())}
-                placeholder="E.G. LATITUDE · RUNES · MMXXVI"
-                className="w-full rounded-xl px-4 py-2.5 bg-black/40 border border-white/10 text-porcelain font-mono text-xs focus:outline-none focus:border-white transition-colors uppercase placeholder:text-white/20"
+                placeholder="E.G. LATITUDE · RUNES"
+                className="w-full rounded-lg px-3 py-2 bg-[#0D0D0F] border border-[#F2EFE9]/[0.10] text-[#F2EFE9] text-xs focus:outline-none focus:border-[#F2EFE9]/40 transition-colors uppercase placeholder:text-[#8E8A82]/40"
               />
             </div>
 
-            {/* Actions */}
-            <div className="pt-2 flex items-center gap-3">
+            {/* Action */}
+            <div className="pt-2">
               <button
                 onClick={handleAdd}
                 disabled={isAdded}
-                className={`flex-1 rounded-full py-4 text-xs font-semibold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 shadow-lg cursor-pointer ${
+                className={`w-full rounded-full py-3.5 text-xs font-medium tracking-normal transition-all duration-200 cursor-pointer ${
                   isAdded
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-[#F5F5F7] text-[#050507] hover:bg-white hover:scale-[1.02] active:scale-95'
+                    ? 'bg-[#0D0D0F] text-[#F2EFE9] border border-[#F2EFE9]/20'
+                    : 'bg-[#F2EFE9] text-[#0D0D0F] hover:bg-white active:scale-98'
                 }`}
               >
-                {isAdded ? (
-                  <>
-                    <Check className="w-4 h-4" />
-                    <span>Added to Vault</span>
-                  </>
-                ) : (
-                  <span>Add to Vault · ${ring.price}</span>
-                )}
+                {isAdded ? 'Added to Bag' : `Add to Bag · $${ring.price}`}
               </button>
             </div>
           </div>

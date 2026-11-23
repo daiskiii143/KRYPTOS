@@ -1,33 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag } from 'lucide-react';
 
 export default function Navigation({
   vaultCount = 0,
   onOpenVault,
   onNavigate,
   activeSection = 'hero',
-  isScrolled: propIsScrolled = false
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [localScrolled, setLocalScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const sy = window.scrollY || document.documentElement.scrollTop || 0;
-      setLocalScrolled(sy > 40);
-    };
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrolled = Boolean(propIsScrolled || localScrolled);
 
   const navLinks = [
-    { id: 'atelier', label: 'Atelier' },
     { id: 'collection', label: 'Collection' },
+    { id: 'atelier', label: 'Atelier' },
     { id: 'sizing', label: 'Sizing' },
-    { id: 'contact', label: 'Contact' }
+    { id: 'contact', label: 'Contact' },
   ];
 
   const handleLinkClick = (id) => {
@@ -36,80 +21,66 @@ export default function Navigation({
   };
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 w-full px-6 sm:px-10 md:px-14 flex items-center justify-between transition-all duration-300 pointer-events-auto ${
-        scrolled
-          ? 'navbar-scrim py-4 sm:py-5'
-          : 'bg-transparent border-b border-transparent py-6 sm:py-8'
-      }`}
-    >
-      {/* 1. Far Left Minimal Brand Mark */}
-      <a
-        href="#hero"
-        onClick={(e) => {
-          e.preventDefault();
-          handleLinkClick('hero');
-        }}
-        className="flex items-center gap-2.5 group cursor-pointer"
-      >
-        <span className="w-2 h-2 rounded-full bg-crimson shadow-[0_0_12px_rgba(220,38,38,0.8)] transition-transform group-hover:scale-125" />
-        <span className="font-display font-medium text-sm sm:text-base tracking-[0.22em] uppercase text-porcelain group-hover:text-white transition-colors">
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 w-full bg-[#0D0D0F]/85 backdrop-blur-md border-b border-[#F2EFE9]/[0.06] transition-colors duration-200">
+      <div className="max-w-[1280px] mx-auto h-full px-6 lg:px-12 flex items-center justify-between">
+        {/* Left: Plain KRYPTOS wordmark in #F2EFE9 (Zero Red Dot, Zero Icons) */}
+        <a
+          href="#hero"
+          onClick={(e) => {
+            e.preventDefault();
+            handleLinkClick('hero');
+          }}
+          className="text-[#F2EFE9] font-medium tracking-[0.14em] text-sm uppercase select-none hover:opacity-80 transition-opacity"
+        >
           KRYPTOS
-        </span>
-      </a>
+        </a>
 
-      {/* 2. Center Lightweight Navigation Links (Never overlap content underneath due to frosted scrim) */}
-      <nav className="hidden md:flex items-center gap-8 lg:gap-10 text-xs font-mono tracking-[0.2em] uppercase text-white/60">
-        {navLinks.map((link) => {
-          const isActive = activeSection === link.id;
-          return (
-            <button
-              key={link.id}
-              onClick={() => handleLinkClick(link.id)}
-              className={`relative py-1 transition-colors duration-200 hover:text-white cursor-pointer ${
-                isActive ? 'text-white font-medium' : ''
-              }`}
-            >
-              {link.label}
-              {isActive && (
-                <span className="absolute bottom-0 left-0 right-0 h-[1px] bg-white/70" />
-              )}
-            </button>
-          );
-        })}
-      </nav>
+        {/* Center: Normal-spaced clean links (Collection, Atelier, Sizing, Contact) */}
+        <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-[#8E8A82]">
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.id;
+            return (
+              <button
+                key={link.id}
+                onClick={() => handleLinkClick(link.id)}
+                className={`transition-colors duration-150 cursor-pointer ${
+                  isActive ? 'text-[#F2EFE9]' : 'hover:text-[#F2EFE9]'
+                }`}
+              >
+                {link.label}
+              </button>
+            );
+          })}
+        </nav>
 
-      {/* 3. Far Right Crisp Porcelain/Glass Vault Pill */}
-      <div className="flex items-center gap-3">
-        <button
-          onClick={onOpenVault}
-          className="rounded-full bg-white/[0.08] hover:bg-white/[0.16] active:scale-95 border border-white/[0.15] backdrop-blur-xl transition-all duration-300 px-5 py-2 text-xs font-medium text-porcelain flex items-center gap-2.5 cursor-pointer shadow-[0_8px_24px_rgba(0,0,0,0.3)] hover:border-white/30 hover:text-white"
-        >
-          <ShoppingBag className="w-3.5 h-3.5 text-white/70" />
-          <span className="tracking-wide">Vault</span>
-          <span className="rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-mono font-semibold text-white">
-            {vaultCount}
-          </span>
-        </button>
+        {/* Right: Minimal Bag (count) text button (Zero Icons) */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={onOpenVault}
+            className="text-xs font-medium text-[#F2EFE9] hover:text-white px-3.5 py-1.5 rounded-full border border-[#F2EFE9]/10 hover:border-[#F2EFE9]/25 bg-[#151518]/60 transition-all cursor-pointer"
+          >
+            Bag ({vaultCount})
+          </button>
 
-        {/* Mobile Menu Hamburger */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-full text-porcelain-muted hover:text-white hover:bg-white/[0.08] backdrop-blur-md transition-colors"
-          aria-label="Toggle navigation menu"
-        >
-          {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-        </button>
+          {/* Mobile menu trigger - clean text button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden text-xs font-medium text-[#8E8A82] hover:text-[#F2EFE9] px-2 py-1 transition-colors"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? 'Close' : 'Menu'}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="absolute top-full left-6 right-6 mt-2 rounded-3xl bg-[#090A0E]/95 backdrop-blur-2xl border border-white/10 p-5 shadow-2xl flex flex-col gap-2 animate-fade-in text-sm font-mono tracking-widest uppercase text-white/60">
+        <div className="md:hidden absolute top-16 left-0 right-0 bg-[#0D0D0F]/95 backdrop-blur-xl border-b border-[#F2EFE9]/[0.08] px-6 py-6 flex flex-col gap-4">
           {navLinks.map((link) => (
             <button
               key={link.id}
               onClick={() => handleLinkClick(link.id)}
-              className="rounded-2xl px-4 py-3 text-left hover:text-white hover:bg-white/[0.06] transition-colors"
+              className="text-left text-sm font-medium text-[#8E8A82] hover:text-[#F2EFE9] py-1 transition-colors"
             >
               {link.label}
             </button>
