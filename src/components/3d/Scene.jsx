@@ -13,12 +13,13 @@ export default function Scene({
       <Canvas
         camera={{ position: [0, 0, 5.2], fov: 38 }}
         gl={{
-          antialias: true,
-          alpha: true,
           powerPreference: 'high-performance',
+          antialias: true,
+          stencil: false,
+          alpha: true,
           toneMappingExposure: 1.15
         }}
-        dpr={[1, 2]}
+        dpr={[1, 1.5]}
       >
         <Suspense fallback={null}>
           <StudioLighting activeEdition={activeEdition} />

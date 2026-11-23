@@ -1,24 +1,21 @@
-import React, { useRef, useMemo, useEffect, Suspense } from 'react';
+import React, { useRef, useMemo, Suspense } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
-import { RING_EDITIONS } from '../../data/rings';
 
 // Configure local Draco decoder path with Vite base path
 useGLTF.setDecoderPath(`${import.meta.env.BASE_URL}draco/`);
 
-// Preload only 'sovereign' immediately on startup
-const sovereignRing = RING_EDITIONS.find((r) => r.id === 'sovereign');
-if (sovereignRing?.modelPath) {
-  try {
-    useGLTF.preload(sovereignRing.modelPath);
-  } catch (e) {
-    // ignore
-  }
+// Dedicated Flagship Model Path: The Sovereign (Keeps GPU memory minimal & initial load instant)
+const SOVEREIGN_MODEL_PATH = `${import.meta.env.BASE_URL}models/kryptos-ring.glb`;
+try {
+  useGLTF.preload(SOVEREIGN_MODEL_PATH);
+} catch (e) {
+  // ignore
 }
 
-function RingGeometry({ modelPath, ringId }) {
-  const { scene } = useGLTF(modelPath);
+function SovereignGeometry() {
+  const { scene } = useGLTF(SOVEREIGN_MODEL_PATH);
 
   const normalizedScene = useMemo(() => {
     const clone = scene.clone(true);
@@ -87,109 +84,22 @@ function RingGeometry({ modelPath, ringId }) {
     });
 
     return clone;
-  }, [scene, modelPath, ringId]);
+  }, [scene]);
 
   return <primitive object={normalizedScene} />;
 }
 
 export default function KryptosRing({
   scrollProgress = 0,
-  activeEdition = 'sovereign',
   userRotation = { x: 0, y: 0 }
 }) {
   const outerGroupRef = useRef();
   const innerSpinRef = useRef();
 
-  // Find active ring definition
-  const activeRing = useMemo(() => {
-    return (
-      RING_EDITIONS.find(
-        (r) => r.id === activeEdition || r.modelEdition === activeEdition
-      ) || RING_EDITIONS[0]
-    );
-  }, [activeEdition]);
-
-  const modelPath = activeRing.modelPath || `${import.meta.env.BASE_URL}models/kryptos-ring.glb`;
-
-  // Staged preloading: dock rings on requestIdleCallback, remaining collection rings on viewport intersection
-  useEffect(() => {
-    // 1. Preload the other 3 hero-dock rings on requestIdleCallback after first paint
-    const heroDockRings = ['eclipse', 'chronos', 'nyx-thorn'];
-    const preloadHeroDock = () => {
-      heroDockRings.forEach((id) => {
-        const ring = RING_EDITIONS.find((r) => r.id === id);
-        if (ring?.modelPath) {
-          try {
-            useGLTF.preload(ring.modelPath);
-          } catch (e) {
-            // ignore
-          }
-        }
-      });
-    };
-
-    let idleId;
-    let timerId;
-    if (typeof window !== 'undefined') {
-      if ('requestIdleCallback' in window) {
-        idleId = window.requestIdleCallback(preloadHeroDock, { timeout: 2000 });
-      } else {
-        timerId = setTimeout(preloadHeroDock, 300);
-      }
-    }
-
-    // 2. Preload the remaining 5 collection rings when #collection enters viewport
-    const remainingRingIds = [
-      'aether-relic',
-      'nocturne',
-      'vespera',
-      'selene-crown',
-      'seraphina-coil'
-    ];
-
-    let observer;
-    const attachObserver = () => {
-      const collectionEl = document.getElementById('collection');
-      if (collectionEl && typeof IntersectionObserver !== 'undefined') {
-        observer = new IntersectionObserver(
-          (entries) => {
-            if (entries[0].isIntersecting) {
-              remainingRingIds.forEach((id) => {
-                const ring = RING_EDITIONS.find((r) => r.id === id);
-                if (ring?.modelPath) {
-                  try {
-                    useGLTF.preload(ring.modelPath);
-                  } catch (e) {
-                    // ignore
-                  }
-                }
-              });
-              observer.disconnect();
-            }
-          },
-          { rootMargin: '200px' }
-        );
-        observer.observe(collectionEl);
-      }
-    };
-
-    attachObserver();
-
-    return () => {
-      if (idleId && 'cancelIdleCallback' in window) {
-        window.cancelIdleCallback(idleId);
-      }
-      if (timerId) {
-        clearTimeout(timerId);
-      }
-      if (observer) {
-        observer.disconnect();
-      }
-    };
-  }, []);
-
   // Frame update: Strict Single-Axis Spin + Auto-Normalized Scale & Coordinates
+  // Zero-Heat Optimization: Pause when tab is hidden
   useFrame((state) => {
+    if (typeof document !== 'undefined' && document.hidden) return;
     if (!outerGroupRef.current || !innerSpinRef.current) return;
 
     const isMobile = window.innerWidth < 1024;
@@ -309,11 +219,7 @@ export default function KryptosRing({
     >
       <group ref={innerSpinRef}>
         <Suspense fallback={null}>
-          <RingGeometry
-            key={activeRing.id}
-            modelPath={modelPath}
-            ringId={activeRing.id}
-          />
+          <SovereignGeometry />
         </Suspense>
       </group>
     </group>

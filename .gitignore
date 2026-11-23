@@ -6,3 +6,6 @@ dist-ssr
 .vite
 *.blend1
 *.blend2
+*.zip
+review-notes.txt
+

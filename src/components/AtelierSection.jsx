@@ -1,40 +1,28 @@
 import React, { useState } from 'react';
-import { RING_EDITIONS, GENDER_FILTERS } from '../data/rings';
+import { RING_EDITIONS } from '../data/rings';
 import EmergeFromRing from './animation/EmergeFromRing';
 import { Check, Sparkles, Shield, Flame, Activity } from 'lucide-react';
 
 export default function AtelierSection({
-  activeEdition = 'sovereign',
-  onSelectEdition,
   onAddToVault,
   onOpenSizing
 }) {
-  const current =
-    RING_EDITIONS.find(
-      (r) => r.id === activeEdition || r.modelEdition === activeEdition
-    ) || RING_EDITIONS[0];
+  // Configurator dedicated to Flagship Edition 01: The Sovereign
+  const sovereignRing = RING_EDITIONS[0];
 
-  const [atelierCategory, setAtelierCategory] = useState('all');
   const [selectedSize, setSelectedSize] = useState('10');
   const [engraving, setEngraving] = useState('');
   const [showEngraving, setShowEngraving] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
-  // Filter editions according to selected category
-  const filteredEditions = RING_EDITIONS.filter((edition) => {
-    if (atelierCategory === 'all') return true;
-    return (
-      edition.gender === atelierCategory ||
-      (edition.categories && edition.categories.includes(atelierCategory))
-    );
-  });
-
   const handleAdd = () => {
-    const sizeToUse = selectedSize || (current.sizes ? current.sizes[0] : '10');
-    onAddToVault(current, `US ${sizeToUse}`, engraving);
+    const sizeToUse = selectedSize || '10';
+    onAddToVault(sovereignRing, `US ${sizeToUse}`, engraving);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 1400);
   };
+
+  const availableSizes = ['6', '7', '8', '9', '10', '11', '12', '13'];
 
   return (
     <section id="atelier" className="py-24 pt-28 bg-transparent">
@@ -76,7 +64,7 @@ export default function AtelierSection({
         </div>
       </EmergeFromRing>
 
-      {/* 2. Interactive 3D Edition Configurator (Wrapped in EmergeFromRing) */}
+      {/* 2. Spacious Flagship Configurator: The Sovereign */}
       <EmergeFromRing originX={-280} originY={40} rotation={-1.5}>
         <div className="rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] p-6 sm:p-10 space-y-8 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
           {/* Header & Price */}
@@ -84,21 +72,21 @@ export default function AtelierSection({
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[11px] font-mono text-crimson font-medium">
-                  EDITION {current.editionNumber} / 09
+                  EDITION 01 / 09 · SIGNATURE SPECIMEN
                 </span>
                 <span className="text-white/20">·</span>
                 <span className="text-xs text-porcelain-muted font-light capitalize">
-                  {current.gender} · {current.style || current.category}
+                  Men · Crimson Filigree
                 </span>
               </div>
               <h3 className="font-display font-bold text-2xl sm:text-3xl text-porcelain tracking-tight">
-                {current.name}
+                {sovereignRing.name}
               </h3>
             </div>
 
             <div className="text-left sm:text-right">
               <span className="font-display font-bold text-2xl sm:text-3xl text-porcelain block">
-                ${current.price}
+                ${sovereignRing.price}
               </span>
               <span className="text-[11px] text-porcelain-dark">
                 Complimentary Worldwide Courier
@@ -107,70 +95,26 @@ export default function AtelierSection({
           </div>
 
           <p className="text-sm font-light text-porcelain-muted max-w-xl leading-relaxed">
-            {current.description}
+            {sovereignRing.description}
           </p>
 
-          {/* Category Filter Pills: All · Men · Women · Unisex */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <label className="text-xs font-medium text-porcelain-muted">
-                Filter Archive Collection
-              </label>
-              <span className="text-[11px] font-mono text-porcelain-dark">
-                {filteredEditions.length} Available
-              </span>
+          {/* Key Specifications Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-2">
+            <div className="rounded-2xl p-3.5 bg-white/[0.02] border border-white/[0.05]">
+              <span className="text-[10px] font-mono text-porcelain-dark block uppercase mb-1">Alloy</span>
+              <span className="text-xs text-white font-medium">Tungsten Carbide</span>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {GENDER_FILTERS.map((cat) => {
-                const isSelected = atelierCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => setAtelierCategory(cat.id)}
-                    className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
-                      isSelected
-                        ? 'bg-[#F5F5F7] text-[#050507] shadow-sm font-semibold scale-105'
-                        : 'bg-white/[0.03] border border-white/[0.08] text-porcelain-muted hover:text-porcelain hover:bg-white/[0.08]'
-                    }`}
-                  >
-                    {cat.label}
-                  </button>
-                );
-              })}
+            <div className="rounded-2xl p-3.5 bg-white/[0.02] border border-white/[0.05]">
+              <span className="text-[10px] font-mono text-porcelain-dark block uppercase mb-1">Hardness</span>
+              <span className="text-xs text-white font-medium">Mohs 9.0 (2,200 HV)</span>
             </div>
-          </div>
-
-          {/* Edition Selector Grid (Switches live 3D ring geometry) */}
-          <div>
-            <label className="text-xs font-medium text-porcelain-muted block mb-3">
-              Select 3D Specimen Geometry
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {filteredEditions.map((edition) => {
-                const isSelected = current.id === edition.id;
-                return (
-                  <button
-                    key={edition.id}
-                    onClick={() => onSelectEdition && onSelectEdition(edition.id)}
-                    className={`rounded-2xl p-3.5 text-left transition-all duration-300 border cursor-pointer ${
-                      isSelected
-                        ? 'border-white/40 bg-white/[0.12] shadow-[0_8px_20px_rgba(0,0,0,0.5)] scale-[1.02]'
-                        : 'border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/15'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between text-[11px] text-porcelain-dark mb-1 font-mono">
-                      <span>NO. {edition.editionNumber}</span>
-                      <span className="text-porcelain font-medium">${edition.price}</span>
-                    </div>
-                    <div className="font-display font-semibold text-xs sm:text-sm text-porcelain truncate">
-                      {edition.name}
-                    </div>
-                    <div className="text-[10px] text-porcelain-dark capitalize mt-0.5 truncate">
-                      {edition.gender} · {edition.style || edition.category}
-                    </div>
-                  </button>
-                );
-              })}
+            <div className="rounded-2xl p-3.5 bg-white/[0.02] border border-white/[0.05]">
+              <span className="text-[10px] font-mono text-porcelain-dark block uppercase mb-1">Core</span>
+              <span className="text-xs text-white font-medium">Molten Pearloid</span>
+            </div>
+            <div className="rounded-2xl p-3.5 bg-white/[0.02] border border-white/[0.05]">
+              <span className="text-[10px] font-mono text-porcelain-dark block uppercase mb-1">Filigree</span>
+              <span className="text-xs text-white font-medium">3D Rhodium Lattice</span>
             </div>
           </div>
 
@@ -196,7 +140,7 @@ export default function AtelierSection({
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
-              {(current.sizes || ['6', '7', '8', '9', '10', '11', '12']).map((size) => {
+              {availableSizes.map((size) => {
                 const isSelected = selectedSize === size;
                 return (
                   <button
@@ -276,10 +220,10 @@ export default function AtelierSection({
               {isAdded ? (
                 <>
                   <Check className="w-4 h-4" />
-                  <span>Specimen Added to Vault</span>
+                  <span>The Sovereign Added to Vault</span>
                 </>
               ) : (
-                <span>Add to Vault · ${current.price}</span>
+                <span>Add The Sovereign to Vault · ${sovereignRing.price}</span>
               )}
             </button>
           </div>

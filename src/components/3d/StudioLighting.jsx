@@ -33,8 +33,8 @@ export default function StudioLighting({ activeEdition = 'sovereign' }) {
         color="#E2E8F0"
       />
 
-      {/* High-Precision Luxury Studio Procedural Environment */}
-      <Environment resolution={256}>
+      {/* High-Precision Luxury Studio Procedural Environment (Bakes once on mount to keep GPU idle) */}
+      <Environment resolution={128} frames={1}>
         {/* Overhead soft white linear strip for continuous glossy clear resin reflection */}
         <Lightformer
           form="rect"

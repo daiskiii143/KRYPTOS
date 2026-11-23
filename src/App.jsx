@@ -176,17 +176,13 @@ export default function App() {
         {/* Hero Section: Centered macro ring view + wordmark (0% – 14%) */}
         <Hero
           scrollProgress={scrollProgress}
-          activeEdition={activeEdition}
-          onSelectEdition={setActiveEdition}
           onExploreClick={() => handleNavigate('atelier')}
         />
 
         {/* Right-Hand Content Column (ml-[34%] on desktop with pt-28 top clearance) */}
         <main className="w-full lg:ml-[34%] lg:w-[66%] max-w-4xl px-6 sm:px-10 md:px-14 bg-transparent pt-28">
-          {/* Section 01: Ejected Headline + Interactive Edition Switcher (Unboxed) */}
+          {/* Section 01: Ejected Headline + Sovereign Configurator */}
           <AtelierSection
-            activeEdition={activeEdition}
-            onSelectEdition={setActiveEdition}
             onAddToVault={handleAddToVault}
             onOpenSizing={() => handleNavigate('sizing')}
           />
